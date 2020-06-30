@@ -41,20 +41,24 @@ class ScreenInfo{ // 스크린 하나에 대한 정보
         void Remove_Screen();
         void Draw_Screen();
         void Add_Componets();
-        void Delete_Componets();
+        void Delete_Componets(int Components_ID);
         ~ScreenInfo(){
             ScreenList.erase(Screen_ID);
         }
 };
 
-class Components_List{ // 컴포넌트 하나에 관련된 정보
+class Components_Info{ // 컴포넌트 하나에 관련된 정보
     private:
         int X, Y, fixX, fixY;
         string name;
         int Components_ID;
         ScreenInfo *parents;
     public:
-        
+        Components_Info(int X,int Y,int fixX,int fixY,string name,ScreenInfo* par);
+        void ComponentsEvent(string eventName);
+        ~Components_Info(){
+            parents -> Delete_Componets(Components_ID);
+        }
 };
 
 //void create_Screen(string name, float LR, float UD, float Dep);

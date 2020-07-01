@@ -10,5 +10,5 @@ void ScreenInfo::Create_Screen(){ // 랜덤으로 ID를 만들고, 스크린 정
         Screen_ID = tempid;
         ScreenList.insert({Screen_ID,this});
     }
-    else{Create_Screen()}
+    else{Create_Screen();}
 }

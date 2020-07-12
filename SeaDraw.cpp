@@ -49,6 +49,8 @@ void renderDISP(){
 }
 
 int main(int argc, char **argv){
+    ScreenInfo *aa = new ScreenInfo("Test",px,py,pz,SeeLR,SeeUD);
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA|GLUT_SINGLE|GLUT_DEPTH);
     glutInitWindowPosition(100, 100);

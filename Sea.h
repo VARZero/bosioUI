@@ -21,14 +21,17 @@
 
 using namespace std;
 
+class ScreenInfo;
+class Components_Info;
+
 extern map <int, ScreenInfo*> ScreenList; // 스크린 ID, 클래스의 포인터가 맵 형태로 저장됨; 띄워야 할 스크린 창 리스트
 extern float px, py, pz; // 현재 위치에 대한 정보 (대부분 상황에서 이동하진 않고, 특수 상황에서만 이동하는 것으로 함)
 extern float vx, vy, vz; // 보는 곳의 시점 벡터 (위치 벡터값을 저장하기 위해 있음, SeeLR이나 SeeUD과 동시에 동작하는 것으로 함)
 extern float SeeLR, SeeUD; // 보는 곳의 각도 정보 (시점 벡터값의 상위값으로 이것이 메인으로 사용됨)
 
-void See_Display(){ // 보는 곳의 각도를 시점 벡터로 변환해주기 위한 함수
+/*void See_Display(){ // 보는 곳의 각도를 시점 벡터로 변환해주기 위한 함수
     SeeLR;
-}
+}*/
 
 class ScreenInfo{ // 스크린 하나에 대한 정보
     private:
@@ -63,7 +66,7 @@ class Components_Info{ // 컴포넌트 하나에 관련된 정보
         ScreenInfo *parents; // 컴포넌트에 위치하는 스크린에 대한 정보
     public:
         Components_Info(int xx,int yy, int weight, int height, string Inputname,ScreenInfo* par){
-            X = xx; Y == yy; sizeX = weight; sizeY = height; name = Inputname; *parents = *par;
+            X = xx; Y== yy; sizeX = weight; sizeY = height; name = Inputname; *parents = *par;
             Create_Components();
         }
         void Create_Components(); // 컴포넌트 ID를 생성하고 부모스크린에 컴포넌트 정보를 추가함

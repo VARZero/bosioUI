@@ -1,39 +1,66 @@
+// https://sungcheol-kim.gitbook.io/glut-tutorials 를 어느정도 참조 했습니다. 김성철님 좋은 튜토리얼 감사합니당
+// OpenGL에서 화면 출력을 위해 사용되는 부분
+
 #include "Sea.h"
 
-static float angleLR = 0.0, angleUD = 0.0, ratio; //시점 각도
-static float px = 0.0f, py = 1.75f, pz = 5.0f; //현재 위치
-static float lx = 0.0f, ly = 0.0f, lz = -1.0f; //보는 곳 위치벡터
-static float mx, my, pastX,pastY; //마우스 움직여서 화면 시점이동 관련
+float ratio;
 
-void renderScreen(){
-    //바닥 - 삭제예정
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+// 아래 3줄은 Sea.h참조
+float px = 0.0f, py = 1.65f, pz = 0.0f;
+float vx = 0.0f, vy = 0.0f, vz = -1.0f;
+float SeeLR = 0.0, SeeUD = 0.0;
+
+void changeSize(int w, int h)
+{
+    if(h == 0)
+        h = 1;
+
+    ratio = 1.0f * w / h;
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glViewport(0, 0, w, h);
+
+    gluPerspective(45,ratio,1,1000);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(px, py, pz, px + vx , py + vy , pz + vz , 0.0f,1.0f,0.0f);
+}
+
+void floorInScreen(){
     glColor3f(0.1f, 0.1f, 0.1f);
-    glBegin(GL_QUADS);
-        glVertex3f(-100.0,0.0,-100.0);
-        glVertex3f(-100.0,0.0,100.0);
-        glVertex3f(100.0,0.0,100.0);
-        glVertex3f(100.0,0.0,-100.0);
-    glEnd();
-    
+	glBegin(GL_QUADS);
+		glVertex3f(-100.0f, 0.0f, -100.0f);
+		glVertex3f(-100.0f, 0.0f,  100.0f);
+		glVertex3f( 100.0f, 0.0f,  100.0f);
+		glVertex3f( 100.0f, 0.0f, -100.0f);
+	glEnd();
+}
+
+void renderDISP(){
+    // 디버깅용으로 땅 넣을예정
+    floorInScreen();
+    // 모든 스크린 출력
+    for (auto OneScreen = ScreenList.begin();OneScreen != ScreenList.end();OneScreen++){
+        // 스크린의 리스트로 해서 출력
+        OneScreen->second->Draw_Screen();
+    }
     glFlush();
 }
 
 int main(int argc, char **argv){
-    //-메- 인
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA|GLUT_SINGLE|GLUT_DEPTH);
-    glutInitWindowPosition(100,100);
-    glutInitWindowSize(960,540);
-    glutCreateWindow("LAPUTA-UI");
+    glutInitWindowPosition(100, 100);
+    glutInitWindowSize(640,480);
+    glutCreateWindow("BOSIO");
 
-    glutKeyboardFunc(keyboardKeyCheck);
-    glutSpecialFunc(debug_inputkey);
-    glutPassiveMotionFunc(mouseMoveAndScreen);
+    glutDisplayFunc(renderDISP);
+    glutIdleFunc(renderDISP);
 
-    glutDisplayFunc(renderScreen);
-    glutIdleFunc(renderScreen);
+    glutReshapeFunc(changeSize);
 
-    glutReshapeFunc(See_Screen);
     glutMainLoop();
+
+    return 0;
 }

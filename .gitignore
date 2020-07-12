@@ -1,2 +1,6 @@
 /.vscode
 /SeaUI.code-workspace
+*.o
+/.vs
+CppProperties.json
+a.out

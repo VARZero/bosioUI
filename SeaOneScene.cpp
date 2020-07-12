@@ -1,3 +1,5 @@
+// Screen 하나의 생성, 처리, 출력, 소멸에 관한 코드
+
 #include "Sea.h"
 #include <time.h>
 

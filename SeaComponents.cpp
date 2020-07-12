@@ -1,3 +1,5 @@
+// 컴포넌트 처리를 위해 사용되는 코드
+
 #include "Sea.h"
 
 void Components_Info::Create_Components(){ // 컴포넌트 아이디를 랜덤으로 생성 시킴

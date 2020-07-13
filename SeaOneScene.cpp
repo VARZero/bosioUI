@@ -25,7 +25,11 @@ void ScreenInfo::Set_Screen(){
 }
 
 void ScreenInfo::Draw_Screen(){
-    
+    for (auto NowComponent = Components_List.begin(); NowComponent != Components_List.end(); NowComponent++){
+        // 컴포넌트의 리스트로 해서 출력
+        NowComponent->second->Draw_Components();
+        /* 컴포넌트에 현재 위치, 각도정보 처리하는건 Set_Screen쪽에서 동작하기때문에 여기는 그냥 출력만 하는걸로함 */
+    }
 }
 
 void ScreenInfo::Add_Components(int x,int y, int w, int h, string name){

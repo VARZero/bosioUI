@@ -27,7 +27,7 @@ void changeSize(int w, int h)
     gluLookAt(px, py, pz, px + vx , py + vy , pz + vz , 0.0f,1.0f,0.0f);
 }
 
-void floorInScreen(){
+void floorInScreen(){ // 땅(디버깅용)
     glColor3f(0.1f, 0.1f, 0.1f);
 	glBegin(GL_QUADS);
 		glVertex3f(-100.0f, 0.0f, -100.0f);
@@ -38,7 +38,6 @@ void floorInScreen(){
 }
 
 void renderDISP(){
-    // 디버깅용으로 땅 넣을예정
     floorInScreen();
     // 모든 스크린 출력
     for (auto OneScreen = ScreenList.begin();OneScreen != ScreenList.end();OneScreen++){

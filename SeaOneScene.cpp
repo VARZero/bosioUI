@@ -20,7 +20,7 @@ void ScreenInfo::Create_Screen(){ // 랜덤으로 ID를 만들고, 스크린 정
 }
 
 void ScreenInfo::Set_Screen(){
-    //
+    // 스크린 영역을 생성합니다.
     
 }
 
@@ -32,7 +32,7 @@ void ScreenInfo::Draw_Screen(){
     }
 }
 
-void ScreenInfo::Add_Components(int x,int y, int w, int h, string name){
+void ScreenInfo::Add_Components(int x,int y, int w, int h, int d, string name){
     // 컴포넌트의 아이디 생성(랜덤 ID) 및 컴포넌트 정보 생성 
     random_device dvSeed;
     mt19937 gen(dvSeed());
@@ -40,11 +40,11 @@ void ScreenInfo::Add_Components(int x,int y, int w, int h, string name){
     printf("Components Create\n");
     int tempid = dis(gen);
     if (Components_List.find(tempid) == Components_List.end()){
-        Components_Info *newComponent = new Components_Info(tempid,x,y,w,h,name,this);
+        Components_Info *newComponent = new Components_Info(tempid,x,y,w,h,d,name,this);
         Components_List.insert({tempid, newComponent});
         printf("%d\n",tempid);
     }
-    else{Add_Components(x,y,w,h,name);}
+    else{Add_Components(x,y,w,h,d,name);}
 }
 
 void ScreenInfo::Delete_Components(int ID){

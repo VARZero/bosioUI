@@ -50,7 +50,7 @@ class ScreenInfo{ // 스크린 하나에 대한 정보
         void Create_Screen(); // 스크린 ID를 생성하고 스크린 정보를 메인 스크린 리스트(ScreenList)에 등록하는 목적의 함수
         void Set_Screen(); // 출력을 위해 처리하기 위한 함수
         void Draw_Screen(); // 스크린을 표시하기 위해 사용하는 함수, OpenGL 스크린 출력 함수에서 사용됨
-        void Add_Components(int, int, int, int, string); // 컴포넌트를 추가하기 위한 함수
+        void Add_Components(int, int, int, int, int, string); // 컴포넌트를 추가하기 위한 함수
         void Delete_Components(int Components_ID); // 컴포넌트를 삭제하기 위한 함수
         ~ScreenInfo(){ // 스크린 삭제
             ScreenList.erase(Screen_ID); // 스크린 정보를 지움
@@ -59,13 +59,13 @@ class ScreenInfo{ // 스크린 하나에 대한 정보
 
 class Components_Info{ // 컴포넌트 하나에 관련된 정보
     private:
-        int X, Y, sizeX, sizeY; // 컴포넌트 위치에 대한 변수
+        int X, Y, sizeX, sizeY, Depth; // 컴포넌트 위치에 대한 변수
         string name; // 컴포넌트 이름에 대한 변수
         int Components_ID; // 컴포넌트 식별 아이디
         ScreenInfo *parents; // 컴포넌트에 위치하는 스크린에 대한 정보
     public:
-        Components_Info(int Cid, int xx,int yy, int weight, int height, string Inputname,ScreenInfo* par){
-            Components_ID = Cid; X = xx; Y = yy; sizeX = weight; sizeY = height; name = Inputname; *parents = *par;
+        Components_Info(int Cid, int xx,int yy, int weight, int height, int indepth, string Inputname,ScreenInfo* par){
+            Components_ID = Cid; X = xx; Y = yy; sizeX = weight; sizeY = height; Depth = indepth; name = Inputname; *parents = *par;
         }
         void Move_Components(); // 컴포넌트의 위치를 이동할때 사용
         void Resize_Components(); // 컴포넌트의 크기를 변경할때 사용

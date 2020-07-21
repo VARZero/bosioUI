@@ -47,7 +47,7 @@ void renderDISP(){
     glFlush();
 }
 
-int main(int argc, char **argv){
+void Screen_Main(int argc, char **argv){
     ScreenInfo *aa = new ScreenInfo("Test",px,py,pz,SeeLR,SeeUD);
 
     glutInit(&argc, argv);
@@ -62,6 +62,4 @@ int main(int argc, char **argv){
     glutReshapeFunc(changeSize);
 
     glutMainLoop();
-
-    return 0;
 }

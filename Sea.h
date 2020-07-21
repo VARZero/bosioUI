@@ -77,3 +77,6 @@ class Components_Info{ // 컴포넌트 하나에 관련된 정보
             parents -> Delete_Components(Components_ID); // 스크린에서 컴포넌트 정보를 삭제
         }
 };
+
+extern void Screen_Main(int, char);
+extern void Net_Sea_Table();

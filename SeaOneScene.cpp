@@ -42,12 +42,11 @@ void ScreenInfo::Add_Components(int x,int y, int w, int h, int d, string name){
     if (Components_List.find(tempid) == Components_List.end()){
         Components_Info *newComponent = new Components_Info(tempid,x,y,w,h,d,name,this);
         Components_List.insert({tempid, newComponent});
-        printf("%d\n",tempid);
     }
     else{Add_Components(x,y,w,h,d,name);}
 }
 
 void ScreenInfo::Delete_Components(int ID){
     Components_Info* Component = Components_List[ID];
-    //Components_Info();
+    Component->~Components_Info();
 }

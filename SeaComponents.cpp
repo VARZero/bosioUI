@@ -19,11 +19,11 @@ void Components_Info::Shape_Components(){
     // 컴포넌트의 보이는 모양을 적용시키기 위해 사용
 }
 
-void Event_Components(string eventname){
+void Components_Info::Event_Components(string eventname){
     // 이벤트 발생시 실행되는 코드
 }
 
-void Draw_Components(){
+void Components_Info::Draw_Components(){
     // 출력을 위해 존재함 (단순히 출력만 함)
-
+    
 }

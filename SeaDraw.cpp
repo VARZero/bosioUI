@@ -2,6 +2,7 @@
 // OpenGL에서 화면 출력을 위해 사용되는 부분
 
 #include "Sea.h"
+#include "glut_Header.h"
 
 float ratio;
 
@@ -47,7 +48,7 @@ void renderDISP(){
     glFlush();
 }
 
-void Screen_Main(int argc, char **argv){
+int main(int argc, char **argv){
     ScreenInfo *aa = new ScreenInfo("Test",px,py,pz,SeeLR,SeeUD);
 
     glutInit(&argc, argv);
@@ -62,4 +63,5 @@ void Screen_Main(int argc, char **argv){
     glutReshapeFunc(changeSize);
 
     glutMainLoop();
+    return 0;
 }

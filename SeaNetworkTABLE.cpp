@@ -8,20 +8,40 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
-#include <thread> // 스크린 하나당 스레드 하나씩 할당을 하기 위해 사용
-
-std::map <int, std::thread*> OneScn_OneThd; // 스크린 하나당 스레드 하나 할당한거 map
+#include <thread> // 작업 하나당 스레드 하나씩 할당을 하기 위해 사용
 
 void Sea_Method_div(char *N_ID, char *Method){
     // Sea 프로토콜의 메소드에 따른 정의
-    
+    if (Method == "SCCREATE"){
+        // 스크린 생성
+        std::thread* work = new std::thread(ScreenCreateWork);
+    }
+    else if (Method == "CMCREATE"){
+        // 컴포넌트 생성
+    }
+    else if (Method == "EVENT"+0x00+0x00+0x00){
+        // 이벤트
+    }
+    else if (Method == "SCMODIFY"){
+        // 스크린 생성
+    }
+    else if (Method == "CMMODIFY"){
+        // 컴포넌트 생성
+    }
+    else{
+        printf("Unknown Event %s\n", Method);
+    }
+}
+
+void ScreenCreateWork(){
+    ScreenInfo *OneScn = new ScreenInfo("Test",px,py,pz,SeeLR,SeeUD);
 }
 
 void Net_Sea_Table(){
     int Sock_Server;
     struct sockaddr_in serverAddr;
     struct sockaddr_in clientAddr;
-    char recvBuffer[8196];
+    char recvBuffer[1024];
     unsigned int clientLen;
     int recvLen;
 
@@ -41,11 +61,11 @@ void Net_Sea_Table(){
 
     while(1){
         clientLen = sizeof(clientAddr);
-        if ((recvLen = recvfrom(Sock_Server, recvBuffer, 8195, 0, (struct sockaddr*)&clientAddr, &clientLen)) == -1){
+        if ((recvLen = recvfrom(Sock_Server, recvBuffer, 1023, 0, (struct sockaddr*)&clientAddr, &clientLen)) == -1){
             printf("recv error");
         }
         else{
-            
+            char N_ID[8], In_Method[8];
         }
     }
 }

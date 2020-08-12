@@ -65,7 +65,16 @@ void Net_Sea_Table(){
             printf("recv error");
         }
         else{
-            char N_ID[8], In_Method[8];
+            char N_ID[9], In_Method[9];
+            for(short i = 0; i <= 8; ++i){
+                N_ID[i] = recvBuffer[i];
+            }
+            N_ID[8] = '\0';
+            for(short i = 0; i <= 8; ++i){
+                In_Method[i] = recvBuffer[8+i];
+            }
+            In_Method[8] = '\0';
+            std::string str(recvBuffer);
         }
     }
 }

@@ -10,6 +10,30 @@
 #include <string.h>
 #include <thread> // 작업 하나당 스레드 하나씩 할당을 하기 위해 사용
 
+// 데이터에서 해당 타입의 변수로 변환시켜 주는 함수
+std::string DataToString(std::string inData,std::string MethodName){
+    size_t tempstart, tempend;
+    tempstart = inData.find(MethodName+':');
+    tempend = inData.find('\n',tempstart + MethodName.size() + 2);
+    return inData.substr(tempstart + MethodName.size() + 2, tempend - tempstart - MethodName.size() - 2);
+}
+int DataToInt(std::string inData,std::string MethodName){
+    std::string temptxt;
+    size_t tempstart, tempend;
+    tempstart = inData.find(MethodName+':');
+    tempend = inData.find('\n',tempstart + MethodName.size() + 2);
+    temptxt = inData.substr(tempstart + MethodName.size() + 2, tempend - tempstart - MethodName.size() - 2);
+    return stoi(temptxt);
+}
+float DataToFloat(std::string inData,std::string MethodName){
+    std::string temptxt;
+    size_t tempstart, tempend;
+    tempstart = inData.find(MethodName+':');
+    tempend = inData.find('\n',tempstart + MethodName.size() + 2);
+    temptxt = inData.substr(tempstart + MethodName.size() + 2, tempend - tempstart - MethodName.size() - 2);
+    return stof(temptxt);
+}
+
 void Sea_Method_div(char *Network_ID, char *Method, std::string Data){
     // Sea 프로토콜의 메소드에 따른 정의
     if (Method == "SCCREATE"){
@@ -39,38 +63,47 @@ void Sea_Method_div(char *Network_ID, char *Method, std::string Data){
 
 // 메소드에 따른 함수
 void ScreenCreateWork(std::string Data){
-    std::string temptxt, SName;
-    size_t tempstart, tempend;
+    int Sid;
+    std::string SName;
     float Sx, Sy, Sz, ScrLR, ScrUD;
     // Name 가져오기
-    tempstart = Data.find("Name:");
-    tempend = Data.find('\n',tempstart + 6);
-    SName = Data.substr(tempstart + 6, tempend - tempstart - 6);
+    SName = DataToString(Data, "name");
     // 위치 가져오기 x, y, z
-    tempstart = Data.find("x:");
-    tempend = Data.find('\n',tempstart + 3);
-    temptxt = Data.substr(tempstart + 3, tempend - tempstart - 3);
-    Sx = stof(temptxt);
-    tempstart = Data.find("y:");
-    tempend = Data.find('\n',tempstart + 3);
-    temptxt = Data.substr(tempstart + 3, tempend - tempstart - 3);
-    Sy = stof(temptxt);
-    tempstart = Data.find("z:");
-    tempend = Data.find('\n',tempstart + 3);
-    temptxt = Data.substr(tempstart + 3, tempend - tempstart - 3);
-    Sz = stof(temptxt);
+    Sx = DataToFloat(Data, "X");
+    Sy = DataToFloat(Data, "Y");
+    Sz = DataToFloat(Data, "Z");
     // 각도 가져오기 AngleLR, AngleUD
-    tempstart = Data.find("AngleLR:");
-    tempend = Data.find('\n',tempstart + 9);
-    temptxt = Data.substr(tempstart + 9, tempend - tempstart - 9);
-    ScrLR = stof(temptxt);
-    tempstart = Data.find("AngleUD:");
-    tempend = Data.find('\n',tempstart + 9);
-    temptxt = Data.substr(tempstart + 9, tempend - tempstart - 9);
-    ScrUD = stof(temptxt);
+    ScrLR = DataToFloat(Data, "AngleLR");
+    ScrUD = DataToFloat(Data, "AngleUD");
 
     ScreenInfo *OneScn = new ScreenInfo(SName, Sx, Sy, Sz, ScrLR, ScrUD);
+    // 생성된 스크린 아이디 전송
+    Sid = OneScn->Output_ScreenID();
+    
 }
+void ComponentsCreateWork(std::string Data){
+    int Sid;
+    std::string Cname;
+    float Cx, Cy, Cw, Ch, Cd;
+    
+    // 스크린 아이디 가져오기
+    Sid = DataToInt(Data, "ScreenID");
+    ScreenInfo* AddComp_Screen = ScreenList[Sid];
+    // 컴포넌트 이름 가져오기
+    Cname = DataToString(Data, "CompName");
+    // 세부사항 가져오기
+    Cx = DataToFloat(Data, "X");
+    Cy = DataToFloat(Data, "Y");
+    Cw = DataToFloat(Data, "Width");
+    Ch = DataToFloat(Data, "Height");
+    Cd = DataToFloat(Data, "Depth");
+
+    // 정보 취합해서 넣기
+    AddComp_Screen->Add_Components(Cx, Cy, Cw, Ch, Cd, Cname);
+    
+    // 생성된 컴포넌트 아이디 돌려주기
+}
+
 
 
 void Net_Sea_Table(){

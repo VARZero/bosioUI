@@ -5,7 +5,7 @@
 
 map <int, ScreenInfo*> ScreenList; 
 
-void ScreenInfo::Create_Screen(){ // 랜덤으로 ID를 만들고, 스크린 정보를 ScreenList에 추가
+int ScreenInfo::Create_Screen(){ // 랜덤으로 ID를 만들고, 스크린 정보를 ScreenList에 추가
     random_device dvSeed;
     mt19937 gen(dvSeed());
     uniform_int_distribution<int> dis(1000000,9999999);
@@ -14,7 +14,6 @@ void ScreenInfo::Create_Screen(){ // 랜덤으로 ID를 만들고, 스크린 정
     if (ScreenList.find(tempid) == ScreenList.end()){
         Screen_ID = tempid;
         ScreenList.insert({Screen_ID,this});
-        printf("%d\n",tempid);
     }
     else{Create_Screen();}
 }

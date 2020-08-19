@@ -32,7 +32,7 @@ class ScreenInfo{ // 스크린 하나에 대한 정보
             angleUD = UD; // 스크린 위아래 지정
             Create_Screen(); // 스크린 ID를 생성하는 단계로 이동
         }
-        void Create_Screen(); // 스크린 ID를 생성하고 스크린 정보를 메인 스크린 리스트(ScreenList)에 등록하는 목적의 함수
+        int Create_Screen(); // 스크린 ID를 생성하고 스크린 정보를 메인 스크린 리스트(ScreenList)에 등록하는 목적의 함수
         void Set_Screen(); // 출력을 위해 처리하기 위한 함수
         void Draw_Screen(); // 스크린을 표시하기 위해 사용하는 함수, OpenGL 스크린 출력 함수에서 사용됨
         void Add_Components(int, int, int, int, int, string); // 컴포넌트를 추가하기 위한 함수

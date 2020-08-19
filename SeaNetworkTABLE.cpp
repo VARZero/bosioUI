@@ -10,7 +10,7 @@
 #include <string.h>
 #include <thread> // 작업 하나당 스레드 하나씩 할당을 하기 위해 사용
 
-void Sea_Method_div(char *N_ID, char *Method){
+void Sea_Method_div(char *Network_ID, char *Method, std::string Data){
     // Sea 프로토콜의 메소드에 따른 정의
     if (Method == "SCCREATE"){
         // 스크린 생성
@@ -18,24 +18,60 @@ void Sea_Method_div(char *N_ID, char *Method){
     }
     else if (Method == "CMCREATE"){
         // 컴포넌트 생성
+        std::thread* work = new std::thread(ScreenCreateWork);
     }
     else if (Method == "EVENT"+0x00+0x00+0x00){
         // 이벤트
+        std::thread* work = new std::thread(ScreenCreateWork);
     }
     else if (Method == "SCMODIFY"){
         // 스크린 생성
+        std::thread* work = new std::thread(ScreenCreateWork);
     }
     else if (Method == "CMMODIFY"){
         // 컴포넌트 생성
+        std::thread* work = new std::thread(ScreenCreateWork);
     }
     else{
         printf("Unknown Event %s\n", Method);
     }
 }
 
-void ScreenCreateWork(){
-    ScreenInfo *OneScn = new ScreenInfo("Test",px,py,pz,SeeLR,SeeUD);
+// 메소드에 따른 함수
+void ScreenCreateWork(std::string Data){
+    std::string temptxt, SName;
+    size_t tempstart, tempend;
+    float Sx, Sy, Sz, ScrLR, ScrUD;
+    // Name 가져오기
+    tempstart = Data.find("Name:");
+    tempend = Data.find('\n',tempstart + 6);
+    SName = Data.substr(tempstart + 6, tempend - tempstart - 6);
+    // 위치 가져오기 x, y, z
+    tempstart = Data.find("x:");
+    tempend = Data.find('\n',tempstart + 3);
+    temptxt = Data.substr(tempstart + 3, tempend - tempstart - 3);
+    Sx = stof(temptxt);
+    tempstart = Data.find("y:");
+    tempend = Data.find('\n',tempstart + 3);
+    temptxt = Data.substr(tempstart + 3, tempend - tempstart - 3);
+    Sy = stof(temptxt);
+    tempstart = Data.find("z:");
+    tempend = Data.find('\n',tempstart + 3);
+    temptxt = Data.substr(tempstart + 3, tempend - tempstart - 3);
+    Sz = stof(temptxt);
+    // 각도 가져오기 AngleLR, AngleUD
+    tempstart = Data.find("AngleLR:");
+    tempend = Data.find('\n',tempstart + 9);
+    temptxt = Data.substr(tempstart + 9, tempend - tempstart - 9);
+    ScrLR = stof(temptxt);
+    tempstart = Data.find("AngleUD:");
+    tempend = Data.find('\n',tempstart + 9);
+    temptxt = Data.substr(tempstart + 9, tempend - tempstart - 9);
+    ScrUD = stof(temptxt);
+
+    ScreenInfo *OneScn = new ScreenInfo(SName, Sx, Sy, Sz, ScrLR, ScrUD);
 }
+
 
 void Net_Sea_Table(){
     int Sock_Server;
@@ -74,7 +110,9 @@ void Net_Sea_Table(){
                 In_Method[i] = recvBuffer[8+i];
             }
             In_Method[8] = '\0';
-            std::string str(recvBuffer);
+            std::string BufData(recvBuffer);
+            BufData.erase(0,15);
+            Sea_Method_div(N_ID, In_Method, BufData);
         }
     }
 }

@@ -65,18 +65,21 @@ void Sea_Method_div(char *Network_ID, char *Method, std::string Data){
 void ScreenCreateWork(std::string Data){
     int Sid;
     std::string SName;
-    float Sx, Sy, Sz, ScrLR, ScrUD;
+    float Sx, Sy, Sz, Sh, Sw, ScrLR, ScrUD;
     // Name 가져오기
     SName = DataToString(Data, "name");
     // 위치 가져오기 x, y, z
     Sx = DataToFloat(Data, "X");
     Sy = DataToFloat(Data, "Y");
     Sz = DataToFloat(Data, "Z");
+    // 높, 너비 가져오기
+    Sh = DataToFloat(Data, "Height");
+    Sw = DataToFloat(Data, "Width");
     // 각도 가져오기 AngleLR, AngleUD
     ScrLR = DataToFloat(Data, "AngleLR");
     ScrUD = DataToFloat(Data, "AngleUD");
 
-    ScreenInfo *OneScn = new ScreenInfo(SName, Sx, Sy, Sz, ScrLR, ScrUD);
+    ScreenInfo *OneScn = new ScreenInfo(SName, Sx, Sy, Sz, Sh, Sw, ScrLR, ScrUD);
     // 생성된 스크린 아이디 전송
     Sid = OneScn->Output_ScreenID();
     

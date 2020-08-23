@@ -20,13 +20,23 @@ extern float SeeLR, SeeUD; // 보는 곳의 각도 정보 (시점 벡터값의 �
 
 class ScreenInfo{ // 스크린 하나에 대한 정보
     private:
-        float x, y, z; // 위치 부분 x, y, z
+        // 지정하는것들
+        float Scr_x, Scr_y, Scr_z; // 위치 부분 x, y, z
         float angleLR, angleUD; // 위치정보 좌우, 위아래
+        float height, width; // 높, 너비
         string Screen_Name; // 스크린 이름 (지정해줘야 함)
+        bool SeeFix; //시점고정
+        // 내부에서 알아서 설정되는것들
         int Screen_ID; // 스크린 아이디 (생성시 랜덤으로 지정됨)
         map <int, Components_Info*> Components_List; // 컴포넌트 리스트
+            // 아래는 Set_Screen함수를 통해 설정됨
+        float CE1line, CE1sin, CE1cos, ED1sin, ED1cos, ED2sin, ED2cos, SEEy;
     public:
-        ScreenInfo(string name, float x, float y, float z, float LR, float UD){ // 스크린 정보 생성시
+        float TopLeftx, TopLefty, TopLeftz, TopRightx, TopRighty, TopRightz, 
+        BottomLeftx, BottomLefty, BottomLeftz, BottomRightx, BottomRighty, BottomRightz;
+        ScreenInfo(string name, float x, float y, float z, float h, float w, float LR, float UD){ // 스크린 정보 생성시
+            Scr_x = x; Scr_y = y; Scr_z = z;
+            height = h; width = w;
             Screen_Name = name; // 스크린 이름 지정
             angleLR = LR; // 스크린 좌우 위치 지정
             angleUD = UD; // 스크린 위아래 지정

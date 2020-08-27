@@ -11,7 +11,8 @@ void Components_Info::Resize_Components(){
     /* 
     임시 메모
         여기에 부모 스크린의 꼭지점 정보를 가져와서 처리하게끔 작성할거임
-    */ 
+    */
+    LTx = parents->TopLeftx - parents->BottomLeftx;
 }
 
 void Components_Info::Canvas_Components(){

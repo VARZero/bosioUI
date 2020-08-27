@@ -33,7 +33,7 @@ class ScreenInfo{ // 스크린 하나에 대한 정보
         float CE1line, CE1sin, CE1cos, ED1sin, ED1cos, ED2sin, ED2cos, SEEy;
     public:
         float TopLeftx, TopLefty, TopLeftz, TopRightx, TopRighty, TopRightz, 
-        BottomLeftx, BottomLefty, BottomLeftz, BottomRightx, BottomRighty, BottomRightz;
+        BottomLeftx, BottomLefty, BottomLeftz, BottomRightx, BottomRighty, BottomRightz; // 좌표상 위치
         ScreenInfo(string name, float x, float y, float z, float h, float w, float LR, float UD){ // 스크린 정보 생성시
             Scr_x = x; Scr_y = y; Scr_z = z;
             height = h; width = w;
@@ -60,6 +60,7 @@ class Components_Info{ // 컴포넌트 하나에 관련된 정보
         int Components_ID; // 컴포넌트 식별 아이디
         ScreenInfo *parents; // 컴포넌트에 위치하는 스크린에 대한 정보
     public:
+        float LTx, LTy, LTz, LBx, LBy, LBz, RTx, RTy, RTz, RBx, RBy, RBz; // 좌표 위치
         Components_Info(int Cid, int xx,int yy, int weight, int height, int indepth, string Inputname,ScreenInfo* par){
             Components_ID = Cid; X = xx; Y = yy; sizeX = weight; sizeY = height; Depth = indepth; name = Inputname; *parents = *par;
         }

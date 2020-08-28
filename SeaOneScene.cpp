@@ -33,10 +33,15 @@ void ScreenInfo::Set_Screen(){
     ED2sin = CE1line*(sin(M_PI*(angleLR/3))*CE1cos-cos(M_PI*(angleLR/3))*CE1sin);
     ED2cos = CE1line*(cos(M_PI*(angleLR/3))*CE1cos+sin(M_PI*(angleLR/3))*CE1sin);
     SEEy = cos(M_PI*(angleUD/3))*height;
+    // 좌표 위치
     TopLeftx = Scr_x-ED2cos; TopLefty = Scr_y+SEEy; TopLeftz = Scr_z-ED2sin; // 좌상단
     TopRightx = Scr_x+ED1cos; TopRighty = Scr_y+SEEy; TopRightz = Scr_z+ED1sin; // 우상단
     BottomLeftx = Scr_x-ED1cos; BottomLefty = Scr_y-SEEy; BottomLeftz = Scr_z-ED1sin; // 좌하단
     BottomRightx = Scr_x+ED2cos, BottomRighty = Scr_y-SEEy; BottomRightz = Scr_z-ED2sin; // 우하단
+    // 픽셀 하나당 크기(픽셀로 정하는 거)
+    Px = (TopLeftx - TopRightx)/width;
+    Py = (TopLefty - BottomLefty)/height;
+    Pz = (TopLeftz - TopRightz)/width;
     for (auto NowComponent = Components_List.begin(); NowComponent != Components_List.end(); NowComponent++){
         // 컴포넌트의 리스트로 해서 변경사항 입력
         NowComponent->second->Resize_Components();

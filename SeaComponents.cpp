@@ -8,20 +8,14 @@ void Components_Info::Move_Components(){
 
 void Components_Info::Resize_Components(){
     //컴포넌트 사이즈 변경 (위치 변경시에서도 동작합니다!)
-    /* 
-    임시 메모
-        여기에 부모 스크린의 꼭지점 정보를 가져와서 처리하게끔 작성할거임
-    */
-    LTx = parents->TopLeftx - parents->BottomLeftx;
+    LTx = (parents->Px)*X; LTy = (parents->Py)*Y; LTz = (parents->Pz)*X;
+    RTx = (parents->Px)*(X+sizeX); RTy = (parents->Py)*Y; RTz = (parents->Pz)*(X+sizeX);
+    LBx = (parents->Px)*X; LBy = (parents->Py)*(Y+sizeY); LBz = (parents->Pz)*X;
+    RBx = (parents->Px)*(X+sizeX); RBy = (parents->Py)*(Y+sizeY); RBz = (parents->Pz)*(X+sizeX);
 }
-
 void Components_Info::Canvas_Components(){
     // 컴포넌트 모양 그려넣기
 
-}
-
-void Components_Info::Shape_Components(){
-    // 컴포넌트의 보이는 모양을 적용시키기 위해 사용
 }
 
 void Components_Info::Event_Components(string eventname){

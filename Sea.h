@@ -23,7 +23,6 @@ class ScreenInfo{ // 스크린 하나에 대한 정보
         // 지정하는것들
         float Scr_x, Scr_y, Scr_z; // 위치 부분 x, y, z
         float angleLR, angleUD; // 위치정보 좌우, 위아래
-        float height, width; // 높, 너비
         string Screen_Name; // 스크린 이름 (지정해줘야 함)
         bool SeeFix; //시점고정
         // 내부에서 알아서 설정되는것들
@@ -34,6 +33,8 @@ class ScreenInfo{ // 스크린 하나에 대한 정보
     public:
         float TopLeftx, TopLefty, TopLeftz, TopRightx, TopRighty, TopRightz, 
         BottomLeftx, BottomLefty, BottomLeftz, BottomRightx, BottomRighty, BottomRightz; // 좌표상 위치
+        float Px, Py, Pz; // 픽셀 하나당 크기
+        float height, width; // 높, 너비
         ScreenInfo(string name, float x, float y, float z, float h, float w, float LR, float UD){ // 스크린 정보 생성시
             Scr_x = x; Scr_y = y; Scr_z = z;
             height = h; width = w;
@@ -67,7 +68,6 @@ class Components_Info{ // 컴포넌트 하나에 관련된 정보
         void Move_Components(); // 컴포넌트의 위치를 이동할때 사용
         void Resize_Components(); // 컴포넌트의 크기를 변경할때 사용
         void Canvas_Components(); // 컴포넌트에 무언가를 그려 넣을때
-        void Shape_Components(); // Canvas_Components로 그려진 것을 표현하기 위해 사용함
         void Event_Components(string eventName); // 이벤트가 발생했을때
         void Draw_Components(); // 컴포넌트를 출력할때
         ~Components_Info(){ // 컴포넌트가 삭제될때

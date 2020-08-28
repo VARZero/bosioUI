@@ -2,10 +2,6 @@
 
 #include "Sea.h"
 
-void Components_Info::Move_Components(){
-    // 컴포넌트 위치 이동
-}
-
 void Components_Info::Resize_Components(){
     //컴포넌트 사이즈 변경 (위치 변경시에서도 동작합니다!)
     LTx = (parents->Px)*X; LTy = (parents->Py)*Y; LTz = (parents->Pz)*X;

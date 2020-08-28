@@ -65,7 +65,6 @@ class Components_Info{ // 컴포넌트 하나에 관련된 정보
         Components_Info(int Cid, int xx,int yy, int weight, int height, int indepth, string Inputname,ScreenInfo* par){
             Components_ID = Cid; X = xx; Y = yy; sizeX = weight; sizeY = height; Depth = indepth; name = Inputname; *parents = *par;
         }
-        void Move_Components(); // 컴포넌트의 위치를 이동할때 사용
         void Resize_Components(); // 컴포넌트의 크기를 변경할때 사용
         void Canvas_Components(); // 컴포넌트에 무언가를 그려 넣을때
         void Event_Components(string eventName); // 이벤트가 발생했을때

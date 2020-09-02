@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <map>
 #include <string>
+#include <list>
 
 using namespace std;
 
@@ -60,6 +61,7 @@ class Components_Info{ // 컴포넌트 하나에 관련된 정보
         string name; // 컴포넌트 이름에 대한 변수
         int Components_ID; // 컴포넌트 식별 아이디
         ScreenInfo *parents; // 컴포넌트에 위치하는 스크린에 대한 정보
+        list<RGBA_OnePixel> colors; // 색 리스트 
     public:
         float LTx, LTy, LTz, LBx, LBy, LBz, RTx, RTy, RTz, RBx, RBy, RBz; // 좌표 위치
         Components_Info(int Cid, int xx,int yy, int weight, int height, int indepth, string Inputname,ScreenInfo* par){
@@ -67,11 +69,17 @@ class Components_Info{ // 컴포넌트 하나에 관련된 정보
         }
         void Resize_Components(); // 컴포넌트의 크기를 변경할때 사용
         void Canvas_Components(); // 컴포넌트에 무언가를 그려 넣을때
-        void Event_Components(string eventName); // 이벤트가 발생했을때
+        void Event_Components(string eventName, string eventdata); // 이벤트가 발생했을때
         void Draw_Components(); // 컴포넌트를 출력할때
         ~Components_Info(){ // 컴포넌트가 삭제될때
             parents -> Delete_Components(Components_ID); // 스크린에서 컴포넌트 정보를 삭제
         }
+};
+
+struct RGBA_OnePixel{
+    // 컴포넌트에서 한 픽셀의 출력을 위해 사용되는 구조체
+    char Red, Green, Blue, Alpha;
+    bool Available;
 };
 
 extern void Screen_Main(int, char);

@@ -38,23 +38,23 @@ void Sea_Method_div(char *Network_ID, char *Method, std::string Data){
     // Sea 프로토콜의 메소드에 따른 정의
     if (Method == "SCCREATE"){
         // 스크린 생성
-        std::thread* work = new std::thread(ScreenCreateWork);
+        std::thread* work = new std::thread(ScreenCreateWork, Data);
     }
     else if (Method == "CMCREATE"){
         // 컴포넌트 생성
-        std::thread* work = new std::thread(ScreenCreateWork);
+        std::thread* work = new std::thread(ComponentsCreateWork, Data);
     }
     else if (Method == "EVENT"+0x00+0x00+0x00){
         // 이벤트
-        std::thread* work = new std::thread(ScreenCreateWork);
+        std::thread* work = new std::thread(ComponentsEventWork, Data);
     }
     else if (Method == "SCMODIFY"){
-        // 스크린 생성
-        std::thread* work = new std::thread(ScreenCreateWork);
+        // 스크린 수정
+        std::thread* work = new std::thread(ScreenMotifyWork, Data);
     }
     else if (Method == "CMMODIFY"){
-        // 컴포넌트 생성
-        std::thread* work = new std::thread(ScreenCreateWork);
+        // 컴포넌트 수정
+        std::thread* work = new std::thread(ComponentsMotifyWork, Data);
     }
     else{
         printf("Unknown Event %s\n", Method);
@@ -84,6 +84,7 @@ void ScreenCreateWork(std::string Data){
     Sid = OneScn->Output_ScreenID();
     
 }
+
 void ComponentsCreateWork(std::string Data){
     int Sid;
     std::string Cname;
@@ -107,7 +108,24 @@ void ComponentsCreateWork(std::string Data){
     // 생성된 컴포넌트 아이디 돌려주기
 }
 
+void ComponentsEventWork(std::string Data){
+    // 이벤트 전달
+    int Sid, Cid; // 스크린 아이디, 컴포넌트 아이디
+    std::string Event;
+    Sid = DataToInt(Data, "ScreenID");
+    Cid = DataToInt(Data, "ComponentsID");
+    Event = DataToString(Data, "Event");
+    
+}
 
+void ScreenMotifyWork(std::string Data){
+    // 스크린 이름, 사이즈 수정
+}
+
+void ComponentsMotifyWork(std::string Data){
+    // 컴포넌트 내용물, 사이즈 수정
+    
+}
 
 void Net_Sea_Table(){
     int Sock_Server;

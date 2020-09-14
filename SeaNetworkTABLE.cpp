@@ -38,7 +38,7 @@ void Sea_Method_div(char *Network_ID, char *Method, std::string Data){
     // Sea 프로토콜의 메소드에 따른 정의
     if (Method == "SCCREATE"){
         // 스크린 생성
-        std::thread* work = new std::thread(ScreenCreateWork, Data);
+        std::thread* work = new std::thread(ScreenCreateWork, Data, *Network_ID);
     }
     else if (Method == "CMCREATE"){
         // 컴포넌트 생성
@@ -62,7 +62,7 @@ void Sea_Method_div(char *Network_ID, char *Method, std::string Data){
 }
 
 // 메소드에 따른 함수
-void ScreenCreateWork(std::string Data){
+void ScreenCreateWork(std::string Data, char* network_ID){
     int Sid;
     std::string SName;
     float Sx, Sy, Sz, Sh, Sw, ScrLR, ScrUD;
@@ -82,7 +82,8 @@ void ScreenCreateWork(std::string Data){
     ScreenInfo *OneScn = new ScreenInfo(SName, Sx, Sy, Sz, Sh, Sw, ScrLR, ScrUD);
     // 생성된 스크린 아이디 전송
     Sid = OneScn->Output_ScreenID();
-    
+    char sendBuf[1024] = { *network_ID + 'SREVERSE' + 'ScreenID:' + Sid };
+    fgets(sendBuf, 1024, stdin);
 }
 
 void ComponentsCreateWork(std::string Data){
@@ -124,13 +125,14 @@ void ScreenMotifyWork(std::string Data){
 
 void ComponentsMotifyWork(std::string Data){
     // 컴포넌트 내용물, 사이즈 수정
-    
+    int Sid, Cid;
+    std::string WorkMeth = DataToString(Data, "Motify");
 }
 
 void Net_Sea_Table(){
     int Sock_Server;
     struct sockaddr_in serverAddr;
-    struct sockaddr_in clientAddr;
+    struct sockaddr_in clientAddr; 
     char recvBuffer[1024];
     unsigned int clientLen;
     int recvLen;

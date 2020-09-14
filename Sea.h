@@ -61,11 +61,12 @@ class Components_Info{ // 컴포넌트 하나에 관련된 정보
         string name; // 컴포넌트 이름에 대한 변수
         int Components_ID; // 컴포넌트 식별 아이디
         ScreenInfo *parents; // 컴포넌트에 위치하는 스크린에 대한 정보
-        list<RGBA_OnePixel> colors; // 색 리스트 
+        int *colorList; // 색상, 투명도 정보
     public:
         float LTx, LTy, LTz, LBx, LBy, LBz, RTx, RTy, RTz, RBx, RBy, RBz; // 좌표 위치
         Components_Info(int Cid, int xx,int yy, int weight, int height, int indepth, string Inputname,ScreenInfo* par){
             Components_ID = Cid; X = xx; Y = yy; sizeX = weight; sizeY = height; Depth = indepth; name = Inputname; *parents = *par;
+            colorList = new int[(sizeX*sizeY)];
         }
         void Resize_Components(); // 컴포넌트의 크기를 변경할때 사용
         void Canvas_Components(); // 컴포넌트에 무언가를 그려 넣을때

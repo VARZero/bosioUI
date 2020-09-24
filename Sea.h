@@ -77,11 +77,5 @@ class Components_Info{ // 컴포넌트 하나에 관련된 정보
         }
 };
 
-struct RGBA_OnePixel{
-    // 컴포넌트에서 한 픽셀의 출력을 위해 사용되는 구조체
-    char Red, Green, Blue, Alpha;
-    bool Available;
-};
-
 extern void Screen_Main(int, char);
 extern void Net_Sea_Table();

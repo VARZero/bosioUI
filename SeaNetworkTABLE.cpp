@@ -125,8 +125,22 @@ void ScreenMotifyWork(std::string Data){
 
 void ComponentsMotifyWork(std::string Data){
     // 컴포넌트 내용물, 사이즈 수정
-    int Sid, Cid;
+    int Sid = DataToInt(Data, "ScreenID"), Cid = DataToInt(Data, "ComponentsID");
     std::string WorkMeth = DataToString(Data, "Motify");
+    if (WorkMeth == "colors"){
+        int startToX = DataToInt(Data, "StartX"), startToY = DataToInt(Data, "StartY"),
+         endToX = DataToInt(Data, "endX"), endToY = DataToInt(Data, "endY");
+        int rcsize = DataToInt(Data, "DataSize"), realsize;
+        auto Colors = new char[rcsize];
+        strcpy(Colors,DataToString(Data, "Colors").c_str());
+        for(int i = 0; i < rcsize; i++){
+            ScreenList[Sid]->Components_List[Cid]->Canvas_Components();
+            realsize++;
+        }
+    }
+    else if (WorkMeth == "resize"){
+        
+    }
 }
 
 void Net_Sea_Table(){

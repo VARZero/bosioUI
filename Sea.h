@@ -28,10 +28,10 @@ class ScreenInfo{ // 스크린 하나에 대한 정보
         bool SeeFix; //시점고정
         // 내부에서 알아서 설정되는것들
         int Screen_ID; // 스크린 아이디 (생성시 랜덤으로 지정됨)
-        map <int, Components_Info*> Components_List; // 컴포넌트 리스트
             // 아래는 Set_Screen함수를 통해 설정됨
         float CE1line, CE1sin, CE1cos, ED1sin, ED1cos, ED2sin, ED2cos, SEEy;
     public:
+        map <int, Components_Info*> Components_List; // 컴포넌트 리스트
         float TopLeftx, TopLefty, TopLeftz, TopRightx, TopRighty, TopRightz, 
         BottomLeftx, BottomLefty, BottomLeftz, BottomRightx, BottomRighty, BottomRightz; // 좌표상 위치
         float Px, Py, Pz; // 픽셀 하나당 크기
@@ -69,7 +69,7 @@ class Components_Info{ // 컴포넌트 하나에 관련된 정보
             colorList = new int[(sizeX*sizeY)];
         }
         void Resize_Components(); // 컴포넌트의 크기를 변경할때 사용
-        void Canvas_Components(); // 컴포넌트에 무언가를 그려 넣을때
+        void Canvas_Components(int index, int OneRGBD); // 컴포넌트에 무언가를 그려 넣을때
         void Event_Components(string eventName, string eventdata); // 이벤트가 발생했을때
         void Draw_Components(); // 컴포넌트를 출력할때
         ~Components_Info(){ // 컴포넌트가 삭제될때

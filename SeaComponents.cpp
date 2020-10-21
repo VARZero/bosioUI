@@ -9,9 +9,11 @@ void Components_Info::Resize_Components(){
     LBx = (parents->Px)*(X/10); LBy = (parents->Py)*((Y+sizeY)/10); LBz = (parents->Pz)*(X/10);
     RBx = (parents->Px)*((X+sizeX)/10); RBy = (parents->Py)*((Y+sizeY)/10); RBz = (parents->Pz)*((X+sizeX)/10);
 }
-void Components_Info::Canvas_Components(){
+void Components_Info::Canvas_Components(int startX, int startY, int length, std::string){
     // 컴포넌트 모양 그려넣기
-    
+    for(int i = 0; i < length; ++i){
+        
+    }
 }
 
 void Components_Info::Event_Components(string eventname, string eventdata){

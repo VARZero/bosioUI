@@ -56,7 +56,7 @@ void ScreenInfo::Draw_Screen(){
     }
 }
 
-void ScreenInfo::Add_Components(int x,int y, int w, int h, int d, string name){
+void ScreenInfo::Add_Components(int x,int y, int w, int h, int d, string name, int* Cid){
     // 컴포넌트의 아이디 생성(랜덤 ID) 및 컴포넌트 정보 생성 
     random_device dvSeed;
     mt19937 gen(dvSeed());
@@ -66,8 +66,9 @@ void ScreenInfo::Add_Components(int x,int y, int w, int h, int d, string name){
     if (Components_List.find(tempid) == Components_List.end()){
         Components_Info *newComponent = new Components_Info(tempid,x,y,w,h,d,name,this);
         Components_List.insert({tempid, newComponent});
+        *Cid = tempid;
     }
-    else{Add_Components(x,y,w,h,d,name);}
+    else{Add_Components(x,y,w,h,d,name,Cid);}
 }
 
 void ScreenInfo::Delete_Components(int ID){

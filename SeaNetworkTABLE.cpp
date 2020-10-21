@@ -132,7 +132,7 @@ void ScreenMotifyWork(std::string Data){
 
 void ComponentsMotifyWork(std::string Data){
     // 컴포넌트 내용물, 사이즈 수정
-    int Sid, Cid;
+    int Sid = DataToInt(Data, "ScreenID"), Cid = DataToInt(Data, "ComponentsID");
     std::string WorkMeth = DataToString(Data, "Motify");
     if (WorkMeth == "Size"){
         // 사이즈 변경

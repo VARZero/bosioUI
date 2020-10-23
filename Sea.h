@@ -1,7 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <map>
+#include <map> // thread와 충돌
 #include <string>
 #include <list>
 
@@ -36,7 +36,6 @@ class ScreenInfo{ // 스크린 하나에 대한 정보
         BottomLeftx, BottomLefty, BottomLeftz, BottomRightx, BottomRighty, BottomRightz; // 좌표상 위치
         float Px, Py, Pz; // 픽셀 하나당 크기
         float height, width; // 높, 너비
-        map <int, Components_Info*> Components_List; // 컴포넌트 리스트
         ScreenInfo(string name, float x, float y, float z, float h, float w, float LR, float UD){ // 스크린 정보 생성시
             Scr_x = x; Scr_y = y; Scr_z = z;
             height = h; width = w;
@@ -80,3 +79,5 @@ class Components_Info{ // 컴포넌트 하나에 관련된 정보
 
 extern void Screen_Main(int, char);
 extern void Net_Sea_Table();
+
+extern map <int, map<std::string, std::string>> SeaNetworkID; // 데이터 재검증을 위해 저장하는 map

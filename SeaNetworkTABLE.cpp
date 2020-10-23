@@ -9,6 +9,9 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <thread> // 작업 하나당 스레드 하나씩 할당을 하기 위해 사용
+// thread가 map과 충돌;;
+
+map <int, map<std::string, std::string>> SeaNetworkID; // 데이터 재검증을 위해 저장하는 map
 
 int Sock_Server; // 전송용 소켓
 
@@ -36,33 +39,6 @@ float DataToFloat(std::string inData,std::string MethodName){
     return stof(temptxt);
 }
 
-void Sea_Method_div(char *Network_ID, char *Method, std::string Data, struct sockaddr_in cliAddr){
-    // Sea 프로토콜의 메소드에 따른 정의
-    if (Method == "SCCREATE"){
-        // 스크린 생성
-        std::thread* work = new std::thread(ScreenCreateWork, Data, *Network_ID, cliAddr);
-    }
-    else if (Method == "CMCREATE"){
-        // 컴포넌트 생성
-        std::thread* work = new std::thread(ComponentsCreateWork, Data, *Network_ID, cliAddr);
-    }
-    else if (Method == "EVENT"+0x00+0x00+0x00){
-        // 이벤트
-        std::thread* work = new std::thread(ComponentsEventWork, Data, *Network_ID, cliAddr);
-    }
-    else if (Method == "SCMODIFY"){
-        // 스크린 수정
-        std::thread* work = new std::thread(ScreenMotifyWork, Data);
-    }
-    else if (Method == "CMMODIFY"){
-        // 컴포넌트 수정
-        std::thread* work = new std::thread(ComponentsMotifyWork, Data);
-    }
-    else{
-        printf("Unknown Event %s\n", Method);
-    }
-}
-
 // 메소드에 따른 함수
 void ScreenCreateWork(std::string Data, char* network_ID, struct sockaddr_in cliAddr){
     int Sid;
@@ -84,7 +60,7 @@ void ScreenCreateWork(std::string Data, char* network_ID, struct sockaddr_in cli
     ScreenInfo *OneScn = new ScreenInfo(SName, Sx, Sy, Sz, Sh, Sw, ScrLR, ScrUD);
     // 생성된 스크린 아이디 전송
     Sid = OneScn->Output_ScreenID();
-    char sendBuf[1024] = { *network_ID + 'SREVERSE' + 'ScreenID:' + Sid };
+    char sendBuf[1024] = { *network_ID + "SREVERSEScreenID:" + Sid };
     while(sendto(Sock_Server, sendBuf, sizeof(sendBuf), 0, (struct sockaddr*)&cliAddr, sizeof(cliAddr)) != sizeof(sendBuf)){
         printf("error! I can't send Screen ID!");
     }
@@ -110,7 +86,7 @@ void ComponentsCreateWork(std::string Data, char* network_ID, struct sockaddr_in
     AddComp_Screen->Add_Components(Cx, Cy, Cw, Ch, Cd, Cname, &Cid);
     
     // 생성된 컴포넌트 아이디 돌려주기
-    char sendBuf[1024] = { *network_ID + 'SREVERSE' + 'ScreenID:' + Sid };
+    char sendBuf[1024] = { *network_ID + "SREVERSEScreenID:" + Sid };
     while(sendto(Sock_Server, sendBuf, sizeof(sendBuf), 0, (struct sockaddr*)&cliAddr, sizeof(cliAddr)) != sizeof(sendBuf)){
         printf("error! I can't send Components ID!");
     }
@@ -144,6 +120,33 @@ void ComponentsMotifyWork(std::string Data){
         int length = DataToInt(Data, "Length");
         std::string ColorDatas = DataToString(Data, "Colors");
         ScreenList[Sid]->Components_List[Cid]->Canvas_Components(startX, startY, length, ColorDatas);
+    }
+}
+
+void Sea_Method_div(char *Network_ID, char *Method, std::string Data, struct sockaddr_in cliAddr){
+    // Sea 프로토콜의 메소드에 따른 정의
+    if (Method == "SCCREATE"){
+        // 스크린 생성
+        std::thread* work = new std::thread(ScreenCreateWork, Data, *Network_ID, cliAddr);
+    }
+    else if (Method == "CMCREATE"){
+        // 컴포넌트 생성
+        std::thread* work = new std::thread(ComponentsCreateWork, Data, *Network_ID, cliAddr);
+    }
+    else if (Method == "EVENT"+0x00+0x00+0x00){
+        // 이벤트
+        std::thread* work = new std::thread(ComponentsEventWork, Data, *Network_ID, cliAddr);
+    }
+    else if (Method == "SCMODIFY"){
+        // 스크린 수정
+        std::thread* work = new std::thread(ScreenMotifyWork, Data);
+    }
+    else if (Method == "CMMODIFY"){
+        // 컴포넌트 수정
+        std::thread* work = new std::thread(ComponentsMotifyWork, Data);
+    }
+    else{
+        printf("Unknown Event %s\n", Method);
     }
 }
 

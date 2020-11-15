@@ -11,9 +11,11 @@
 #include <thread> // 작업 하나당 스레드 하나씩 할당을 하기 위해 사용
 // thread가 map과 충돌;;
 
-map <int, map<std::string, std::string>> SeaNetworkID; // 데이터 재검증을 위해 저장하는 map
+//map <int, map<std::string, std::string>> SeaNetworkID; // 데이터 재검증을 위해 저장하는 map
 
 int Sock_Server; // 전송용 소켓
+short i; // 임시변수
+std::mutex Mut;
 
 // 데이터에서 해당 타입의 변수로 변환시켜 주는 함수
 std::string DataToString(std::string inData,std::string MethodName){
@@ -40,10 +42,11 @@ float DataToFloat(std::string inData,std::string MethodName){
 }
 
 // 메소드에 따른 함수
-void ScreenCreateWork(std::string Data, char* network_ID, struct sockaddr_in cliAddr){
+void ScreenCreateWork(std::string Data/*, char* network_ID, struct sockaddr_in cliAddr*/){
     int Sid;
     std::string SName;
     float Sx, Sy, Sz, Sh, Sw, ScrLR, ScrUD;
+    char* methodcc = "SREVERSEScreenID:";
     // Name 가져오기
     SName = DataToString(Data, "name");
     // 위치 가져오기 x, y, z
@@ -60,18 +63,19 @@ void ScreenCreateWork(std::string Data, char* network_ID, struct sockaddr_in cli
     ScreenInfo *OneScn = new ScreenInfo(SName, Sx, Sy, Sz, Sh, Sw, ScrLR, ScrUD);
     // 생성된 스크린 아이디 전송
     Sid = OneScn->Output_ScreenID();
-    char sendBuf[1024] = { *network_ID + "SREVERSEScreenID:" + Sid };
+    /*char *sendBuf = { *network_ID + (char) *methodcc + Sid }; // 수정좀 하기
     while(sendto(Sock_Server, sendBuf, sizeof(sendBuf), 0, (struct sockaddr*)&cliAddr, sizeof(cliAddr)) != sizeof(sendBuf)){
         printf("error! I can't send Screen ID!");
-    }
+    }*/
 }
 
-void ComponentsCreateWork(std::string Data, char* network_ID, struct sockaddr_in cliAddr){
+/*void ComponentsCreateWork(std::string Data, char* network_ID, struct sockaddr_in cliAddr){
     int Sid, Cid;
     std::string Cname;
     float Cx, Cy, Cw, Ch, Cd;  
     // 스크린 아이디 가져오기
     Sid = DataToInt(Data, "ScreenID");
+    Mut.lock();
     ScreenInfo* AddComp_Screen = ScreenList[Sid];
     // 컴포넌트 이름 가져오기
     Cname = DataToString(Data, "CompName");
@@ -84,9 +88,9 @@ void ComponentsCreateWork(std::string Data, char* network_ID, struct sockaddr_in
 
     // 정보 취합해서 넣기
     AddComp_Screen->Add_Components(Cx, Cy, Cw, Ch, Cd, Cname, &Cid);
-    
+    Mut.unlock();
     // 생성된 컴포넌트 아이디 돌려주기
-    char sendBuf[1024] = { *network_ID + "SREVERSEScreenID:" + Sid };
+    char *sendBuf = { *network_ID + (char *) "SREVERSEScreenID: " + Cid }; // 수정좀 하기
     while(sendto(Sock_Server, sendBuf, sizeof(sendBuf), 0, (struct sockaddr*)&cliAddr, sizeof(cliAddr)) != sizeof(sendBuf)){
         printf("error! I can't send Components ID!");
     }
@@ -119,17 +123,19 @@ void ComponentsMotifyWork(std::string Data){
         int startY = DataToInt(Data, "startY");
         int length = DataToInt(Data, "Length");
         std::string ColorDatas = DataToString(Data, "Colors");
+        Mut.lock();
         ScreenList[Sid]->Components_List[Cid]->Canvas_Components(startX, startY, length, ColorDatas);
+        Mut.unlock();
     }
-}
+}*/
 
-void Sea_Method_div(char *Network_ID, char *Method, std::string Data, struct sockaddr_in cliAddr){
+void Sea_Method_div(char *Network_ID, char *Method, char *Screen_ID, std::string Data, struct sockaddr_in cliAddr){
     // Sea 프로토콜의 메소드에 따른 정의
     if (Method == "SCCREATE"){
         // 스크린 생성
-        std::thread* work = new std::thread(ScreenCreateWork, Data, *Network_ID, cliAddr);
+        std::thread* work = new std::thread(ScreenCreateWork, Data/*, *Network_ID, cliAddr*/);
     }
-    else if (Method == "CMCREATE"){
+    /*else if (Method == "CMCREATE"){
         // 컴포넌트 생성
         std::thread* work = new std::thread(ComponentsCreateWork, Data, *Network_ID, cliAddr);
     }
@@ -144,7 +150,7 @@ void Sea_Method_div(char *Network_ID, char *Method, std::string Data, struct soc
     else if (Method == "CMMODIFY"){
         // 컴포넌트 수정
         std::thread* work = new std::thread(ComponentsMotifyWork, Data);
-    }
+    }*/
     else{
         printf("Unknown Event %s\n", Method);
     }
@@ -178,18 +184,22 @@ void Net_Sea_Table(){
             printf("recv error");
         }
         else{
-            char N_ID[9], In_Method[9];
-            for(short i = 0; i <= 8; ++i){
+            char N_ID[9], In_Method[9], Scr_ID[9];
+            for(i = 0; i <= 8; ++i){
                 N_ID[i] = recvBuffer[i];
             }
             N_ID[8] = '\0';
-            for(short i = 0; i <= 8; ++i){
+            for(i = 0; i <= 8; ++i){
                 In_Method[i] = recvBuffer[8+i];
             }
             In_Method[8] = '\0';
+            for(i = 0; i <= 8; ++i){
+                Scr_ID[i] = recvBuffer[16+i];
+            }
+            Scr_ID[8] = '\0';
             std::string BufData(recvBuffer);
-            BufData.erase(0,15);
-            Sea_Method_div(N_ID, In_Method, BufData, clientAddr);
+            BufData.erase(0,23);
+            Sea_Method_div(N_ID, In_Method, Scr_ID, BufData, clientAddr);
         }
     }
 }

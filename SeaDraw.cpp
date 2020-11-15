@@ -4,7 +4,7 @@
 #include "Sea.h"
 #include "glut_Header.h"
 
-float ratio;
+float rratio;
 
 // 아래 3줄은 Sea.h참조
 float px = 0.0f, py = 1.65f, pz = 0.0f;
@@ -16,13 +16,13 @@ void changeSize(int w, int h)
     if(h == 0)
         h = 1;
 
-    ratio = 1.0f * w / h;
+    rratio = 1.0f * w / h;
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
     glViewport(0, 0, w, h);
 
-    gluPerspective(45,ratio,1,1000);
+    gluPerspective(45,rratio,1,1000);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(px, py, pz, px + vx , py + vy , pz + vz , 0.0f,1.0f,0.0f);
@@ -41,10 +41,12 @@ void floorInScreen(){ // 땅(디버깅용)
 void renderDISP(){
     floorInScreen();
     // 모든 스크린 출력
+    Mut.lock();
     for (auto OneScreen = ScreenList.begin();OneScreen != ScreenList.end();OneScreen++){
         // 스크린의 리스트로 해서 출력
         OneScreen->second->Draw_Screen();
     }
+    Mut.unlock();
     glFlush();
 }
 

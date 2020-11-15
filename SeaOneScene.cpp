@@ -11,11 +11,13 @@ void ScreenInfo::Create_Screen(){ // 랜덤으로 ID를 만들고, 스크린 정
     uniform_int_distribution<int> dis(1000000,9999999);
     printf("aa\n");
     int tempid = dis(gen);
+    Mut.lock();
     if (ScreenList.find(tempid) == ScreenList.end()){
         Screen_ID = tempid;
         ScreenList.insert({Screen_ID,this});
+        Mut.unlock();
     }
-    else{Create_Screen();}
+    else{Mut.unlock();Create_Screen();}
 }
 
 int ScreenInfo::Output_ScreenID(){
@@ -42,18 +44,22 @@ void ScreenInfo::Set_Screen(){
     Px = (TopLeftx - TopRightx)/width;
     Py = (TopLefty - BottomLefty)/height;
     Pz = (TopLeftz - TopRightz)/width;
+    Mut.lock();
     for (auto NowComponent = Components_List.begin(); NowComponent != Components_List.end(); NowComponent++){
         // 컴포넌트의 리스트로 해서 변경사항 입력
         NowComponent->second->Resize_Components();
     }
+    Mut.unlock();
 }
 
 void ScreenInfo::Draw_Screen(){
+    Mut.lock();
     for (auto NowComponent = Components_List.begin(); NowComponent != Components_List.end(); NowComponent++){
         // 컴포넌트의 리스트로 해서 출력
         NowComponent->second->Draw_Components();
         /* 컴포넌트에 현재 위치, 각도정보 처리하는건 Set_Screen쪽에서 동작하기때문에 여기는 그냥 출력만 하는걸로함 */
     }
+    Mut.unlock();
 }
 
 void ScreenInfo::Add_Components(int x,int y, int w, int h, int d, string name, int* Cid){
@@ -63,15 +69,19 @@ void ScreenInfo::Add_Components(int x,int y, int w, int h, int d, string name, i
     uniform_int_distribution<int> dis(100000,999999);
     printf("Components Create\n");
     int tempid = dis(gen);
+    Mut.lock();
     if (Components_List.find(tempid) == Components_List.end()){
         Components_Info *newComponent = new Components_Info(tempid,x,y,w,h,d,name,this);
         Components_List.insert({tempid, newComponent});
+        Mut.unlock();
         *Cid = tempid;
     }
-    else{Add_Components(x,y,w,h,d,name,Cid);}
+    else{Mut.unlock();Add_Components(x,y,w,h,d,name,Cid);}
 }
 
 void ScreenInfo::Delete_Components(int ID){
+    Mut.lock();
     Components_Info* Component = Components_List[ID];
+    Mut.unlock();
     Component->~Components_Info();
 }

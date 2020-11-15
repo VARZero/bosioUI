@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <thread>
 #include <map> // thread와 충돌
 #include <mutex>
 #include <string>
@@ -10,6 +11,8 @@ using namespace std;
 
 class ScreenInfo;
 class Components_Info;
+
+extern std::mutex Mut; // 뮤텍스
 
 extern map <int, ScreenInfo*> ScreenList; // 스크린 ID, 클래스의 포인터가 맵 형태로 저장됨; 띄워야 할 스크린 창 리스트
 extern float px, py, pz; // 현재 위치에 대한 정보 (대부분 상황에서 이동하진 않고, 특수 상황에서만 이동하는 것으로 함)
@@ -37,6 +40,7 @@ class ScreenInfo{ // 스크린 하나에 대한 정보
         BottomLeftx, BottomLefty, BottomLeftz, BottomRightx, BottomRighty, BottomRightz; // 좌표상 위치
         float Px, Py, Pz; // 픽셀 하나당 크기
         float height, width; // 높, 너비
+        std::thread ScreenThread;
         ScreenInfo(string name, float x, float y, float z, float h, float w, float LR, float UD){ // 스크린 정보 생성시
             Scr_x = x; Scr_y = y; Scr_z = z;
             height = h; width = w;
@@ -65,8 +69,8 @@ class Components_Info{ // 컴포넌트 하나에 관련된 정보
         int *colorList; // 색상, 투명도 정보
     public:
         float LTx, LTy, LTz, LBx, LBy, LBz, RTx, RTy, RTz, RBx, RBy, RBz; // 좌표 위치
-        Components_Info(int Cid, int xx,int yy, int weight, int height, int indepth, string Inputname,ScreenInfo* par){
-            Components_ID = Cid; X = xx; Y = yy; sizeX = weight; sizeY = height; Depth = indepth; name = Inputname; *parents = *par;
+        Components_Info(int Cid, int xx,int yy, int weight, int height, int indepth, string Inputname, ScreenInfo* par){
+            Components_ID = Cid; X = xx; Y = yy; sizeX = weight; sizeY = height; Depth = indepth; name = Inputname; parents = par;
             colorList = new int[(sizeX*sizeY)];
         }
         void Resize_Components(); // 컴포넌트의 크기를 변경할때 사용
@@ -81,4 +85,4 @@ class Components_Info{ // 컴포넌트 하나에 관련된 정보
 extern void Screen_Main(int, char);
 extern void Net_Sea_Table();
 
-extern map <int, map<std::string, std::string>> SeaNetworkID; // 데이터 재검증을 위해 저장하는 map
+//extern map <int, map<std::string, std::string>> SeaNetworkID; // 데이터 재검증을 위해 저장하는 map

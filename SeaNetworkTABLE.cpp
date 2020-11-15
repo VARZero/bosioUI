@@ -46,7 +46,6 @@ void ScreenCreateWork(std::string Data, char* network_ID, struct sockaddr_in cli
     int Sid;
     std::string SName;
     float Sx, Sy, Sz, Sh, Sw, ScrLR, ScrUD;
-    char* methodcc = "SREVERSEScreenID:";
     // Name 가져오기
     SName = DataToString(Data, "name");
     // 위치 가져오기 x, y, z
@@ -63,15 +62,15 @@ void ScreenCreateWork(std::string Data, char* network_ID, struct sockaddr_in cli
     ScreenInfo *OneScn = new ScreenInfo(SName, Sx, Sy, Sz, Sh, Sw, ScrLR, ScrUD);
     // 생성된 스크린 아이디 전송
     Sid = OneScn->Output_ScreenID();
-    char* a;
-    sprintf(a,"%d",Sid);
-    char *sendBuf = { *network_ID + *methodcc + a }; // 수정좀 하기
+    char* SidC;
+    sprintf(SidC,"%d",Sid);
+    char *sendBuf = { *network_ID + (char *) "SREVERSEScreenID:" + *SidC }; // 수정좀 하기
     while(sendto(Sock_Server, sendBuf, sizeof(sendBuf), 0, (struct sockaddr*)&cliAddr, sizeof(cliAddr)) != sizeof(sendBuf)){
         printf("error! I can't send Screen ID!");
     }
 }
 
-/*void ComponentsCreateWork(std::string Data, char* network_ID, struct sockaddr_in cliAddr){
+void ComponentsCreateWork(std::string Data, char* network_ID, struct sockaddr_in cliAddr){
     int Sid, Cid;
     std::string Cname;
     float Cx, Cy, Cw, Ch, Cd;  
@@ -92,7 +91,9 @@ void ScreenCreateWork(std::string Data, char* network_ID, struct sockaddr_in cli
     AddComp_Screen->Add_Components(Cx, Cy, Cw, Ch, Cd, Cname, &Cid);
     Mut.unlock();
     // 생성된 컴포넌트 아이디 돌려주기
-    char *sendBuf = { *network_ID + (char *) "SREVERSEScreenID: " + Cid }; // 수정좀 하기
+    char* CidC;
+    sprintf(CidC, "%d", Cid);
+    char *sendBuf = { *network_ID + (char *) "SREVERSEComponID: " + *CidC }; // 수정좀 하기
     while(sendto(Sock_Server, sendBuf, sizeof(sendBuf), 0, (struct sockaddr*)&cliAddr, sizeof(cliAddr)) != sizeof(sendBuf)){
         printf("error! I can't send Components ID!");
     }
@@ -129,7 +130,7 @@ void ComponentsMotifyWork(std::string Data){
         ScreenList[Sid]->Components_List[Cid]->Canvas_Components(startX, startY, length, ColorDatas);
         Mut.unlock();
     }
-}*/
+}
 
 void Sea_Method_div(char *Network_ID, char *Method, char *Screen_ID, std::string Data, struct sockaddr_in cliAddr){
     // Sea 프로토콜의 메소드에 따른 정의
@@ -137,13 +138,13 @@ void Sea_Method_div(char *Network_ID, char *Method, char *Screen_ID, std::string
         // 스크린 생성
         std::thread* work = new std::thread(ScreenCreateWork, Data, std::ref(Network_ID), cliAddr);
     }
-    /*else if (Method == "CMCREATE"){
+    else if (Method == "CMCREATE"){
         // 컴포넌트 생성
-        std::thread* work = new std::thread(ComponentsCreateWork, Data, *Network_ID, cliAddr);
+        std::thread* work = new std::thread(ComponentsCreateWork, Data, std::ref(Network_ID), cliAddr);
     }
     else if (Method == "EVENT"+0x00+0x00+0x00){
         // 이벤트
-        std::thread* work = new std::thread(ComponentsEventWork, Data, *Network_ID, cliAddr);
+        std::thread* work = new std::thread(ComponentsEventWork, Data, std::ref(Network_ID), cliAddr);
     }
     else if (Method == "SCMODIFY"){
         // 스크린 수정
@@ -152,7 +153,7 @@ void Sea_Method_div(char *Network_ID, char *Method, char *Screen_ID, std::string
     else if (Method == "CMMODIFY"){
         // 컴포넌트 수정
         std::thread* work = new std::thread(ComponentsMotifyWork, Data);
-    }*/
+    }
     else{
         printf("Unknown Event %s\n", Method);
     }
@@ -186,19 +187,16 @@ void Net_Sea_Table(){
             printf("recv error");
         }
         else{
-            char N_ID[9], In_Method[9], Scr_ID[9];
+            char N_ID[8], In_Method[8], Scr_ID[8];
             for(i = 0; i <= 8; ++i){
                 N_ID[i] = recvBuffer[i];
             }
-            N_ID[8] = '\0';
             for(i = 0; i <= 8; ++i){
                 In_Method[i] = recvBuffer[8+i];
             }
-            In_Method[8] = '\0';
             for(i = 0; i <= 8; ++i){
                 Scr_ID[i] = recvBuffer[16+i];
             }
-            Scr_ID[8] = '\0';
             std::string BufData(recvBuffer);
             BufData.erase(0,23);
             Sea_Method_div(N_ID, In_Method, Scr_ID, BufData, clientAddr);

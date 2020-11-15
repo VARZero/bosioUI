@@ -51,6 +51,7 @@ void renderDISP(){
 }
 
 int main(int argc, char **argv){
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA|GLUT_SINGLE|GLUT_DEPTH);
     glutInitWindowPosition(100, 100);
@@ -62,6 +63,7 @@ int main(int argc, char **argv){
 
     glutReshapeFunc(changeSize);
 
+    Net_Sea_Table();
     glutMainLoop();
     return 0;
 }

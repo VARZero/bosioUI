@@ -2,6 +2,7 @@
 
 #include "Sea.h"
 
+#include <iostream>
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -59,6 +60,7 @@ void ScreenCreateWork(std::string Data, char* network_ID, struct sockaddr_in cli
     ScrLR = DataToFloat(Data, "AngleLR");
     ScrUD = DataToFloat(Data, "AngleUD");
 
+    cout << SName << endl;
     ScreenInfo *OneScn = new ScreenInfo(SName, Sx, Sy, Sz, Sh, Sw, ScrLR, ScrUD);
     // 생성된 스크린 아이디 전송
     Sid = OneScn->Output_ScreenID();
@@ -132,40 +134,47 @@ void ComponentsMotifyWork(std::string Data){
     }
 }
 
-void Sea_Method_div(char *Network_ID, char *Method, char *Screen_ID, std::string Data, struct sockaddr_in cliAddr){
+int Sea_Method_div(char *Network_ID, const char *Method, char *Screen_ID, std::string Data, struct sockaddr_in cliAddr){
     // Sea 프로토콜의 메소드에 따른 정의
-    if (Method == "SCCREATE"){
+    //((const char *) Method == "SCCREATE")
+    if (strcmp(Method, "SCCREATE") == 0){
         // 스크린 생성
+        printf("aa");
         std::thread* work = new std::thread(ScreenCreateWork, Data, std::ref(Network_ID), cliAddr);
+        
     }
-    else if (Method == "CMCREATE"){
+    else if (strcmp(Method,"CMCREATE") == 0){
         // 컴포넌트 생성
+        printf("bb");
         std::thread* work = new std::thread(ComponentsCreateWork, Data, std::ref(Network_ID), cliAddr);
     }
-    else if (Method == "EVENT"+0x00+0x00+0x00){
+    else if (strcmp(Method, "EVENT"+0x00+0x00+0x00) == 0){
         // 이벤트
-        std::thread* work = new std::thread(ComponentsEventWork, Data, std::ref(Network_ID), cliAddr);
+        printf("cc");
+        //std::thread* work = new std::thread(ComponentsEventWork, Data, std::ref(Network_ID), cliAddr);
     }
-    else if (Method == "SCMODIFY"){
+    else if (strcmp(Method, "SCMODIFY") == 0){
         // 스크린 수정
-        std::thread* work = new std::thread(ScreenMotifyWork, Data);
+        printf("dd");
+        //std::thread* work = new std::thread(ScreenMotifyWork, Data);
     }
-    else if (Method == "CMMODIFY"){
+    else if (strcmp(Method, "CMMODIFY") == 0){
         // 컴포넌트 수정
-        std::thread* work = new std::thread(ComponentsMotifyWork, Data);
+        printf("ee");
+        //std::thread* work = new std::thread(ComponentsMotifyWork, Data);
     }
     else{
         printf("Unknown Event %s\n", Method);
     }
+    return 1;
 }
 
 void Net_Sea_Table(){
-    char recvBuffer[9]; // 수신용 버퍼
+    char recvBuffer[1024]; // 수신용 버퍼
     // 클라이언트 관련 아이디들
     struct sockaddr_in serverAddr;
     struct sockaddr_in clientAddr;
     unsigned int clientLen;
-    int recvLen;
     int Sock_Server = socket(AF_INET, SOCK_DGRAM, 0);
     if(Sock_Server == -1){
         printf("Socket Error");
@@ -174,40 +183,40 @@ void Net_Sea_Table(){
     memset(&serverAddr, 0, sizeof(serverAddr));
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serverAddr.sin_port = htonl(22117);
-    printf("wow\n");
+    serverAddr.sin_port = htons(22117);
     int status = ::bind(Sock_Server, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
     if (status == -1){
         printf("Bind fail");
         return;
     }
-    printf("lol\n");
     while(1){
         clientLen = sizeof(clientAddr);
-        printf("%d\n", clientLen);
-        ssize_t recvLen = recvfrom(Sock_Server, recvBuffer, 8, 0, (struct sockaddr*)&clientAddr, &clientLen);
-        printf("%d",recvLen);
+        ssize_t recvLen = recvfrom(Sock_Server, recvBuffer, 1023, 0, (struct sockaddr*)&clientAddr, &clientLen);
         if (recvLen == -1){
             printf("recv error");
         }
         else{
-            printf("pop\n");
-            recvBuffer[8] = '\0';
-            printf("Recevied: %s\n", recvBuffer);
-            /*char N_ID[8], In_Method[8], Scr_ID[8];
+            char N_ID[9], In_Method[9], Scr_ID[9];
             for(i = 0; i <= 8; ++i){
                 N_ID[i] = recvBuffer[i];
             }
+            N_ID[8] = '\0';
+            cout << N_ID << endl;
             for(i = 0; i <= 8; ++i){
                 In_Method[i] = recvBuffer[8+i];
             }
+            In_Method[8] = '\0';
+            cout << In_Method << endl;
             for(i = 0; i <= 8; ++i){
                 Scr_ID[i] = recvBuffer[16+i];
             }
+            Scr_ID[8] = '\0';
+            cout << Scr_ID << endl;
             std::string BufData(recvBuffer);
             BufData.erase(0,23);
-            Sea_Method_div(N_ID, In_Method, Scr_ID, BufData, clientAddr);*/
+            if (Sea_Method_div(N_ID, In_Method, Scr_ID, BufData, clientAddr) == 1){
+                continue;
+            }
         }
     }
-    printf("lol\n");
 }

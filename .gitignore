@@ -5,3 +5,5 @@
 /.vs
 CppProperties.json
 a.out
+test.py
+tests.py

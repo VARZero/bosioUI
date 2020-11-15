@@ -160,34 +160,41 @@ void Sea_Method_div(char *Network_ID, char *Method, char *Screen_ID, std::string
 }
 
 void Net_Sea_Table(){
-    char recvBuffer[1024]; // 수신용 버퍼
+    char recvBuffer[9]; // 수신용 버퍼
     // 클라이언트 관련 아이디들
     struct sockaddr_in serverAddr;
     struct sockaddr_in clientAddr;
     unsigned int clientLen;
     int recvLen;
-
-    if(Sock_Server = socket(AF_INET, SOCK_DGRAM, 0) == -1){
+    int Sock_Server = socket(AF_INET, SOCK_DGRAM, 0);
+    if(Sock_Server == -1){
         printf("Socket Error");
         return;
     }
     memset(&serverAddr, 0, sizeof(serverAddr));
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serverAddr.sin_port = htonl(2117);
-
-    if (bind(Sock_Server, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1){
+    serverAddr.sin_port = htonl(22117);
+    printf("wow\n");
+    int status = ::bind(Sock_Server, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
+    if (status == -1){
         printf("Bind fail");
         return;
     }
-
+    printf("lol\n");
     while(1){
         clientLen = sizeof(clientAddr);
-        if ((recvLen = recvfrom(Sock_Server, recvBuffer, 1023, 0, (struct sockaddr*)&clientAddr, &clientLen)) == -1){
+        printf("%d\n", clientLen);
+        ssize_t recvLen = recvfrom(Sock_Server, recvBuffer, 8, 0, (struct sockaddr*)&clientAddr, &clientLen);
+        printf("%d",recvLen);
+        if (recvLen == -1){
             printf("recv error");
         }
         else{
-            char N_ID[8], In_Method[8], Scr_ID[8];
+            printf("pop\n");
+            recvBuffer[8] = '\0';
+            printf("Recevied: %s\n", recvBuffer);
+            /*char N_ID[8], In_Method[8], Scr_ID[8];
             for(i = 0; i <= 8; ++i){
                 N_ID[i] = recvBuffer[i];
             }
@@ -199,7 +206,8 @@ void Net_Sea_Table(){
             }
             std::string BufData(recvBuffer);
             BufData.erase(0,23);
-            Sea_Method_div(N_ID, In_Method, Scr_ID, BufData, clientAddr);
+            Sea_Method_div(N_ID, In_Method, Scr_ID, BufData, clientAddr);*/
         }
     }
+    printf("lol\n");
 }

@@ -42,7 +42,7 @@ float DataToFloat(std::string inData,std::string MethodName){
 }
 
 // 메소드에 따른 함수
-void ScreenCreateWork(std::string Data/*, char* network_ID, struct sockaddr_in cliAddr*/){
+void ScreenCreateWork(std::string Data, char* network_ID, struct sockaddr_in cliAddr){
     int Sid;
     std::string SName;
     float Sx, Sy, Sz, Sh, Sw, ScrLR, ScrUD;
@@ -63,10 +63,12 @@ void ScreenCreateWork(std::string Data/*, char* network_ID, struct sockaddr_in c
     ScreenInfo *OneScn = new ScreenInfo(SName, Sx, Sy, Sz, Sh, Sw, ScrLR, ScrUD);
     // 생성된 스크린 아이디 전송
     Sid = OneScn->Output_ScreenID();
-    /*char *sendBuf = { *network_ID + (char) *methodcc + Sid }; // 수정좀 하기
+    char* a;
+    sprintf(a,"%d",Sid);
+    char *sendBuf = { *network_ID + *methodcc + a }; // 수정좀 하기
     while(sendto(Sock_Server, sendBuf, sizeof(sendBuf), 0, (struct sockaddr*)&cliAddr, sizeof(cliAddr)) != sizeof(sendBuf)){
         printf("error! I can't send Screen ID!");
-    }*/
+    }
 }
 
 /*void ComponentsCreateWork(std::string Data, char* network_ID, struct sockaddr_in cliAddr){
@@ -133,7 +135,7 @@ void Sea_Method_div(char *Network_ID, char *Method, char *Screen_ID, std::string
     // Sea 프로토콜의 메소드에 따른 정의
     if (Method == "SCCREATE"){
         // 스크린 생성
-        std::thread* work = new std::thread(ScreenCreateWork, Data/*, *Network_ID, cliAddr*/);
+        std::thread* work = new std::thread(ScreenCreateWork, Data, std::ref(Network_ID), cliAddr);
     }
     /*else if (Method == "CMCREATE"){
         // 컴포넌트 생성

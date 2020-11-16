@@ -77,13 +77,16 @@ void ScreenCreateWork(std::string Data, char* network_ID, struct sockaddr_in cli
     Sid = OneScn->Output_ScreenID();
     Mut.unlock();
     cout << Sid << " Sid" << endl;
-    char *sendBuf = { *network_ID + (char *) "SREVERSEScreenID:" + Sid }; // 수정좀 하기
-    ssize_t a = sendto(Sock_Server, sendBuf, sizeof(sendBuf), 0, (struct sockaddr*)&cliAddr, sizeof(cliAddr));
-    cout << cliAddr.sin_addr.s_addr << " " << cliAddr.sin_port << endl;
-    cout << a << endl;
-    if(a != sizeof(sendBuf)){
+    char *sendBuf; // = { *network_ID + (char *) "SREVERSEScreenID:" + Sid };
+    //strcpy(sendBuf, network_ID);
+    strcpy(sendBuf, "SREVERSEScreenID:");
+    printf("%s\n", sendBuf);
+
+    ssize_t SendScrID = sendto(Sock_Server, sendBuf, sizeof(sendBuf), 0, (struct sockaddr*)&cliAddr, sizeof(cliAddr));
+    cout << SendScrID << endl;
+    if(SendScrID != sizeof(sendBuf)){
         cout << sizeof(sendBuf) << endl;
-        printf("error! I can't send Screen ID!");
+        printf("error! I can't send Screen ID!\n");
     }
 }
 
@@ -110,7 +113,7 @@ void ComponentsCreateWork(std::string Data, char* network_ID, struct sockaddr_in
     // 생성된 컴포넌트 아이디 돌려주기
     char* CidC;
     sprintf(CidC, "%d", Cid);
-    char *sendBuf = { *network_ID + (char *) "SREVERSEComponID: " + *CidC }; // 수정좀 하기
+    char *sendBuf = { *network_ID + (char *) "CREVERSEComponID: " + *CidC }; // 수정좀 하기
     while(sendto(Sock_Server, sendBuf, sizeof(sendBuf), 0, (struct sockaddr*)&cliAddr, sizeof(cliAddr)) != sizeof(sendBuf)){
         printf("error! I can't send Components ID!");
     }
@@ -161,18 +164,26 @@ int Sea_Method_div(char *Network_ID, const char *Method, char *Screen_ID, std::s
     else if (strcmp(Method,"CMCREATE") == 0){
         // 컴포넌트 생성
         std::thread* work = new std::thread(ComponentsCreateWork, Data, std::ref(Network_ID), cliAddr);
+        work->join();
+        delete work;
     }
     else if (strcmp(Method, "EVENT"+0x00+0x00+0x00) == 0){
         // 이벤트
-        //std::thread* work = new std::thread(ComponentsEventWork, Data, std::ref(Network_ID), cliAddr);
+        std::thread* work = new std::thread(ComponentsEventWork, Data, std::ref(Network_ID), cliAddr);
+        work->join();
+        delete work;
     }
     else if (strcmp(Method, "SCMODIFY") == 0){
         // 스크린 수정
-        //std::thread* work = new std::thread(ScreenMotifyWork, Data);
+        std::thread* work = new std::thread(ScreenMotifyWork, Data);
+        work->join();
+        delete work;
     }
     else if (strcmp(Method, "CMMODIFY") == 0){
         // 컴포넌트 수정
-        //std::thread* work = new std::thread(ComponentsMotifyWork, Data);
+        std::thread* work = new std::thread(ComponentsMotifyWork, Data);
+        work->join();
+        delete work;
     }
     else{
         printf("Unknown Event %s\n", Method);
@@ -187,7 +198,7 @@ void Net_Sea_Table(){
     struct sockaddr_in serverAddr;
     struct sockaddr_in clientAddr;
     unsigned int clientLen;
-    int Sock_Server = socket(AF_INET, SOCK_DGRAM, 0);
+    Sock_Server = socket(AF_INET, SOCK_DGRAM, 0);
     if(Sock_Server == -1){
         printf("Socket Error");
         return;
@@ -227,6 +238,7 @@ void Net_Sea_Table(){
             cout << Scr_ID << endl;
             std::string BufData(recvBuffer);
             BufData.erase(0,23);
+            printf("%x %x %ld\n", clientAddr.sin_addr.s_addr, clientAddr.sin_port, sizeof(clientAddr));
             if (Sea_Method_div(N_ID, In_Method, Scr_ID, BufData, clientAddr) == 1){
                 continue;
             }

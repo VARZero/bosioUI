@@ -22,6 +22,9 @@ std::mutex Mut;
 std::string DataToString(std::string inData,std::string MethodName){
     size_t tempstart, tempend;
     tempstart = inData.find(MethodName+':');
+    if (tempstart == -1){
+        return "";
+    }
     tempend = inData.find('\n',tempstart + MethodName.size() + 2);
     return inData.substr(tempstart + MethodName.size() + 2, tempend - tempstart - MethodName.size() - 2);
 }
@@ -29,6 +32,9 @@ int DataToInt(std::string inData,std::string MethodName){
     std::string temptxt;
     size_t tempstart, tempend;
     tempstart = inData.find(MethodName+':');
+    if (tempstart == -1){
+        return 0;
+    }
     tempend = inData.find('\n',tempstart + MethodName.size() + 2);
     temptxt = inData.substr(tempstart + MethodName.size() + 2, tempend - tempstart - MethodName.size() - 2);
     return stoi(temptxt);
@@ -37,6 +43,9 @@ float DataToFloat(std::string inData,std::string MethodName){
     std::string temptxt;
     size_t tempstart, tempend;
     tempstart = inData.find(MethodName+':');
+    if (tempstart == -1){
+        return 0;
+    }
     tempend = inData.find('\n',tempstart + MethodName.size() + 2);
     temptxt = inData.substr(tempstart + MethodName.size() + 2, tempend - tempstart - MethodName.size() - 2);
     return stof(temptxt);
@@ -49,6 +58,7 @@ void ScreenCreateWork(std::string Data, char* network_ID, struct sockaddr_in cli
     float Sx, Sy, Sz, Sh, Sw, ScrLR, ScrUD;
     // Name 가져오기
     SName = DataToString(Data, "name");
+    cout << SName << endl;
     // 위치 가져오기 x, y, z
     Sx = DataToFloat(Data, "X");
     Sy = DataToFloat(Data, "Y");
@@ -60,14 +70,19 @@ void ScreenCreateWork(std::string Data, char* network_ID, struct sockaddr_in cli
     ScrLR = DataToFloat(Data, "AngleLR");
     ScrUD = DataToFloat(Data, "AngleUD");
 
-    cout << SName << endl;
+    cout << SName << Sx << Sh << ScrLR << endl;
     ScreenInfo *OneScn = new ScreenInfo(SName, Sx, Sy, Sz, Sh, Sw, ScrLR, ScrUD);
     // 생성된 스크린 아이디 전송
+    Mut.lock();
     Sid = OneScn->Output_ScreenID();
-    char* SidC;
-    sprintf(SidC,"%d",Sid);
-    char *sendBuf = { *network_ID + (char *) "SREVERSEScreenID:" + *SidC }; // 수정좀 하기
-    while(sendto(Sock_Server, sendBuf, sizeof(sendBuf), 0, (struct sockaddr*)&cliAddr, sizeof(cliAddr)) != sizeof(sendBuf)){
+    Mut.unlock();
+    cout << Sid << " Sid" << endl;
+    char *sendBuf = { *network_ID + (char *) "SREVERSEScreenID:" + Sid }; // 수정좀 하기
+    ssize_t a = sendto(Sock_Server, sendBuf, sizeof(sendBuf), 0, (struct sockaddr*)&cliAddr, sizeof(cliAddr));
+    cout << cliAddr.sin_addr.s_addr << " " << cliAddr.sin_port << endl;
+    cout << a << endl;
+    if(a != sizeof(sendBuf)){
+        cout << sizeof(sendBuf) << endl;
         printf("error! I can't send Screen ID!");
     }
 }
@@ -139,33 +154,30 @@ int Sea_Method_div(char *Network_ID, const char *Method, char *Screen_ID, std::s
     //((const char *) Method == "SCCREATE")
     if (strcmp(Method, "SCCREATE") == 0){
         // 스크린 생성
-        printf("aa");
         std::thread* work = new std::thread(ScreenCreateWork, Data, std::ref(Network_ID), cliAddr);
-        
+        work->join();
+        delete work;
     }
     else if (strcmp(Method,"CMCREATE") == 0){
         // 컴포넌트 생성
-        printf("bb");
         std::thread* work = new std::thread(ComponentsCreateWork, Data, std::ref(Network_ID), cliAddr);
     }
     else if (strcmp(Method, "EVENT"+0x00+0x00+0x00) == 0){
         // 이벤트
-        printf("cc");
         //std::thread* work = new std::thread(ComponentsEventWork, Data, std::ref(Network_ID), cliAddr);
     }
     else if (strcmp(Method, "SCMODIFY") == 0){
         // 스크린 수정
-        printf("dd");
         //std::thread* work = new std::thread(ScreenMotifyWork, Data);
     }
     else if (strcmp(Method, "CMMODIFY") == 0){
         // 컴포넌트 수정
-        printf("ee");
         //std::thread* work = new std::thread(ComponentsMotifyWork, Data);
     }
     else{
         printf("Unknown Event %s\n", Method);
     }
+    
     return 1;
 }
 
@@ -184,6 +196,7 @@ void Net_Sea_Table(){
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     serverAddr.sin_port = htons(22117);
+    printf("%x %x\n", serverAddr.sin_addr.s_addr, serverAddr.sin_port);
     int status = ::bind(Sock_Server, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
     if (status == -1){
         printf("Bind fail");

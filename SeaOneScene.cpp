@@ -2,6 +2,7 @@
 
 #include "Sea.h"
 #include <random>
+#include <iostream>
 
 map <int, ScreenInfo*> ScreenList; 
 
@@ -9,12 +10,12 @@ void ScreenInfo::Create_Screen(){ // 랜덤으로 ID를 만들고, 스크린 정
     random_device dvSeed;
     mt19937 gen(dvSeed());
     uniform_int_distribution<int> dis(1000000,9999999);
-    printf("aa\n");
     int tempid = dis(gen);
     Mut.lock();
     if (ScreenList.find(tempid) == ScreenList.end()){
         Screen_ID = tempid;
         ScreenList.insert({Screen_ID,this});
+        cout << Screen_ID << endl;
         Mut.unlock();
     }
     else{Mut.unlock();Create_Screen();}

@@ -77,15 +77,17 @@ void ScreenCreateWork(std::string Data, char* network_ID, struct sockaddr_in cli
     Sid = OneScn->Output_ScreenID();
     Mut.unlock();
     cout << Sid << " Sid" << endl;
-    char *sendBuf; // = { *network_ID + (char *) "SREVERSEScreenID:" + Sid };
-    //strcpy(sendBuf, network_ID);
-    strcpy(sendBuf, "SREVERSEScreenID:");
-    printf("%s\n", sendBuf);
+    char sendBuf[34], SidC[9]; // = { *network_ID + (char *) "SREVERSEScreenID:" + Sid };
+    sprintf(SidC, "%d", Sid);
+    strcpy(sendBuf, network_ID);
+    strcat(sendBuf, "SREVERSEScreenID: ");
+    strcat(sendBuf, SidC);
+    cout << sendBuf << endl;
 
-    ssize_t SendScrID = sendto(Sock_Server, sendBuf, sizeof(sendBuf), 0, (struct sockaddr*)&cliAddr, sizeof(cliAddr));
+    ssize_t SendScrID = sendto(Sock_Server, sendBuf, strlen(sendBuf), 0, (struct sockaddr*)&cliAddr, sizeof(cliAddr));
     cout << SendScrID << endl;
-    if(SendScrID != sizeof(sendBuf)){
-        cout << sizeof(sendBuf) << endl;
+    if(SendScrID != strlen(sendBuf)){
+        cout << strlen(sendBuf) << endl;
         printf("error! I can't send Screen ID!\n");
     }
 }

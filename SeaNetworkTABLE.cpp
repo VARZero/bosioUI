@@ -80,7 +80,7 @@ void ScreenCreateWork(std::string Data, char* network_ID, struct sockaddr_in cli
     char sendBuf[34], SidC[9]; // = { *network_ID + (char *) "SREVERSEScreenID:" + Sid };
     sprintf(SidC, "%d", Sid);
     strcpy(sendBuf, network_ID);
-    strcat(sendBuf, "SREVERSEScreenID: ");
+    strcat(sendBuf, "SCRREVESID: ");
     strcat(sendBuf, SidC);
     cout << sendBuf << endl;
 
@@ -113,11 +113,16 @@ void ComponentsCreateWork(std::string Data, char* network_ID, struct sockaddr_in
     AddComp_Screen->Add_Components(Cx, Cy, Cw, Ch, Cd, Cname, &Cid);
     Mut.unlock();
     // 생성된 컴포넌트 아이디 돌려주기
-    char* CidC;
+    char sendBuf[34], CidC[9]; // = { *network_ID + (char *) "SREVERSEScreenID:" + Sid };
     sprintf(CidC, "%d", Cid);
-    char *sendBuf = { *network_ID + (char *) "CREVERSEComponID: " + *CidC }; // 수정좀 하기
-    while(sendto(Sock_Server, sendBuf, sizeof(sendBuf), 0, (struct sockaddr*)&cliAddr, sizeof(cliAddr)) != sizeof(sendBuf)){
-        printf("error! I can't send Components ID!");
+    strcpy(sendBuf, network_ID);
+    strcat(sendBuf, "CPTREVESID: ");
+    strcat(sendBuf, CidC);
+
+    ssize_t SendScrID = sendto(Sock_Server, sendBuf, strlen(sendBuf), 0, (struct sockaddr*)&cliAddr, sizeof(cliAddr));
+    if(SendScrID != strlen(sendBuf)){
+        cout << strlen(sendBuf) << endl;
+        printf("error! I can't send Components ID!\n");
     }
 }
 
@@ -154,7 +159,7 @@ void ComponentsMotifyWork(std::string Data){
     }
 }
 
-int Sea_Method_div(char *Network_ID, const char *Method, char *Screen_ID, std::string Data, struct sockaddr_in cliAddr){
+int Sea_Method_div(char *Network_ID, const char *Method, std::string Data, struct sockaddr_in cliAddr){
     // Sea 프로토콜의 메소드에 따른 정의
     //((const char *) Method == "SCCREATE")
     if (strcmp(Method, "SCCREATE") == 0){
@@ -222,7 +227,7 @@ void Net_Sea_Table(){
             printf("recv error");
         }
         else{
-            char N_ID[9], In_Method[9], Scr_ID[9];
+            char N_ID[9], In_Method[9];
             for(i = 0; i <= 8; ++i){
                 N_ID[i] = recvBuffer[i];
             }
@@ -233,15 +238,10 @@ void Net_Sea_Table(){
             }
             In_Method[8] = '\0';
             cout << In_Method << endl;
-            for(i = 0; i <= 8; ++i){
-                Scr_ID[i] = recvBuffer[16+i];
-            }
-            Scr_ID[8] = '\0';
-            cout << Scr_ID << endl;
             std::string BufData(recvBuffer);
-            BufData.erase(0,23);
+            BufData.erase(0,15);
             printf("%x %x %ld\n", clientAddr.sin_addr.s_addr, clientAddr.sin_port, sizeof(clientAddr));
-            if (Sea_Method_div(N_ID, In_Method, Scr_ID, BufData, clientAddr) == 1){
+            if (Sea_Method_div(N_ID, In_Method, BufData, clientAddr) == 1){
                 continue;
             }
         }

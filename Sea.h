@@ -40,7 +40,7 @@ class ScreenInfo{ // 스크린 하나에 대한 정보
         BottomLeftx, BottomLefty, BottomLeftz, BottomRightx, BottomRighty, BottomRightz; // 좌표상 위치
         float Px, Py, Pz; // 픽셀 하나당 크기
         float height, width; // 높, 너비
-        std::thread ScreenThread;
+        std::thread ScreenThread; // 이벤트 처리를 위한 쓰레드
         ScreenInfo(string name, float x, float y, float z, float h, float w, float LR, float UD){ // 스크린 정보 생성시
             Scr_x = x; Scr_y = y; Scr_z = z;
             height = h; width = w;
@@ -50,6 +50,8 @@ class ScreenInfo{ // 스크린 하나에 대한 정보
             Create_Screen(); // 스크린 ID를 생성하는 단계로 이동
         }
         void Create_Screen(); // 스크린 ID를 생성하고 스크린 정보를 메인 스크린 리스트(ScreenList)에 등록하는 목적의 함수
+        void NameEdit_Screen(std::string); // 스크린 이름을 수정함
+        void SizeEdit_Screen(float, float, float, float, float); // 스크린의 위치를 이동하기 위해 사용
         int Output_ScreenID(); // 스크린 ID를 외부로 출력하기 위해 사용
         void Set_Screen(); // 출력을 위해 처리하기 위한 함수
         void Draw_Screen(); // 스크린을 표시하기 위해 사용하는 함수, OpenGL 스크린 출력 함수에서 사용됨
@@ -57,7 +59,7 @@ class ScreenInfo{ // 스크린 하나에 대한 정보
         void Delete_Components(int Components_ID); // 컴포넌트를 삭제하기 위한 함수
         ~ScreenInfo(){ // 스크린 삭제
             ScreenList.erase(Screen_ID); // 스크린 정보를 지움
-        } 
+        }
 };
 
 class Components_Info{ // 컴포넌트 하나에 관련된 정보

@@ -21,12 +21,21 @@ void ScreenInfo::Create_Screen(){ // 랜덤으로 ID를 만들고, 스크린 정
     else{Mut.unlock();Create_Screen();}
 }
 
+void ScreenInfo::NameEdit_Screen(std::string newname){
+    ScreenInfo::Screen_Name = newname;
+}
+
+void ScreenInfo::SizeEdit_Screen(float x, float y, float z, float LR, float UD){
+    Scr_x = x; Scr_y = y; Scr_z = z; angleLR = LR, angleUD = UD;
+    Set_Screen();
+}
+
 int ScreenInfo::Output_ScreenID(){
     return Screen_ID;
 }
 
 void ScreenInfo::Set_Screen(){
-    // 스크린 영역을 생성합니다.
+    // 스크린 영역을 생성, 수정합니다.
     Scr_x = Scr_x + 2*cos(M_PI*(angleUD/3))*sin(M_PI*(angleLR/3)); Scr_y = Scr_y + 2*sin(M_PI*(angleUD/3)); Scr_z = Scr_z - 2*cos(M_PI*(angleUD/3))*cos(M_PI*(angleLR/3)); //위치에 대응하는 좌표
     CE1line = sqrt(pow(sin(M_PI*(angleUD/3))*height,2)+pow(width,2));
     CE1sin = (sin(M_PI*(angleUD/3))*height)/CE1line;

@@ -9,8 +9,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
-#include <thread> // 작업 하나당 스레드 하나씩 할당을 하기 위해 사용
-// thread가 map과 충돌;;
+#include <thread>
 
 //map <int, map<std::string, std::string>> SeaNetworkID; // 데이터 재검증을 위해 저장하는 map
 
@@ -25,7 +24,7 @@ std::string DataToString(std::string inData,std::string MethodName){
     if (tempstart == -1){
         return "";
     }
-    tempend = inData.find('\n',tempstart + MethodName.size() + 2);
+    tempend = inData.find('\t',tempstart + MethodName.size() + 2);
     return inData.substr(tempstart + MethodName.size() + 2, tempend - tempstart - MethodName.size() - 2);
 }
 int DataToInt(std::string inData,std::string MethodName){
@@ -35,7 +34,7 @@ int DataToInt(std::string inData,std::string MethodName){
     if (tempstart == -1){
         return 0;
     }
-    tempend = inData.find('\n',tempstart + MethodName.size() + 2);
+    tempend = inData.find('\t',tempstart + MethodName.size() + 2);
     temptxt = inData.substr(tempstart + MethodName.size() + 2, tempend - tempstart - MethodName.size() - 2);
     return stoi(temptxt);
 }
@@ -46,7 +45,7 @@ float DataToFloat(std::string inData,std::string MethodName){
     if (tempstart == -1){
         return 0;
     }
-    tempend = inData.find('\n',tempstart + MethodName.size() + 2);
+    tempend = inData.find('\t',tempstart + MethodName.size() + 2);
     temptxt = inData.substr(tempstart + MethodName.size() + 2, tempend - tempstart - MethodName.size() - 2);
     return stof(temptxt);
 }
@@ -128,22 +127,53 @@ void ComponentsCreateWork(std::string Data, char* network_ID, struct sockaddr_in
 
 void ComponentsEventWork(std::string Data, char* network_ID, struct sockaddr_in cliAddr){
     // 이벤트 전달
-    int Sid, Cid; // 스크린 아이디, 컴포넌트 아이디
+    /*int Sid, Cid; // 스크린 아이디, 컴포넌트 아이디
     std::string Event;
     Sid = DataToInt(Data, "ScreenID");
-    Cid = DataToInt(Data, "ComponentsID");
     Event = DataToString(Data, "Event");
-    
+    if (Event == "Click"){
+        // 클릭시
+        float CliLR, CliUD;
+        CliLR = DataToFloat(Data, "LR");
+        CliUD = DataToFloat(Data, "UD");
+    }
+    else if (Event == "KeyPress"){
+        // 키보드 키 입력
+        char Key = (char) DataToString(Data, "Key").c_str();
+    }
+    else if (Event == "Scroll"){
+        // 스크롤
+    }
+    else if (Event == "FnEvent"){
+        // 제스쳐 같은 특수 이벤트
+
+    }*/
 }
 
 void ScreenMotifyWork(std::string Data){
     // 스크린 이름, 사이즈 수정
+    int Sid = DataToInt(Data, "ScreenID");
+    std::string WorkMeth = DataToString(Data, "ScMotify");
+    ScreenInfo* editSc = ScreenList[Sid];
+    if (WorkMeth == "Name"){
+        std::string name = DataToString(Data, "NewName");
+        editSc->NameEdit_Screen(name);
+    }
+    else if (WorkMeth == "Size"){
+        float mx = DataToFloat(Data, "X");
+        float my = DataToFloat(Data, "Y");
+        float mz = DataToFloat(Data, "Z");
+        float mLR = DataToFloat(Data, "LR");
+        float mUD = DataToFloat(Data, "UD");
+
+        editSc->SizeEdit_Screen(mx, my, mz, mLR, mUD);
+    }
 }
 
 void ComponentsMotifyWork(std::string Data){
     // 컴포넌트 내용물, 사이즈 수정
     int Sid = DataToInt(Data, "ScreenID"), Cid = DataToInt(Data, "ComponentsID");
-    std::string WorkMeth = DataToString(Data, "Motify");
+    std::string WorkMeth = DataToString(Data, "CmMotify");
     if (WorkMeth == "Size"){
         // 사이즈 변경
     }

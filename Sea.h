@@ -75,8 +75,8 @@ class Components_Info{ // 컴포넌트 하나에 관련된 정보
             Components_ID = Cid; X = xx; Y = yy; sizeX = weight; sizeY = height; Depth = indepth; name = Inputname; parents = par;
             colorList = new int[(sizeX*sizeY)];
         }
-        void Resize_Components(); // 컴포넌트의 크기를 변경할때 사용
-        void Canvas_Components(int, int, int, std::string); // 컴포넌트에 무언가를 그려 넣을때
+        void Resize_Components(int, int, int, int, int); // 컴포넌트의 크기를 변경할때 사용
+        void Canvas_Components(int, int, int, char*); // 컴포넌트에 무언가를 그려 넣을때
         void Event_Components(string eventName, string eventdata); // 이벤트가 발생했을때
         void Draw_Components(); // 컴포넌트를 출력할때
         ~Components_Info(){ // 컴포넌트가 삭제될때

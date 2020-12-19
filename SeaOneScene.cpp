@@ -57,7 +57,7 @@ void ScreenInfo::Set_Screen(){
     Mut.lock();
     for (std::map<int,Components_Info*>::iterator NowComponent = Components_List.begin(); NowComponent != Components_List.end(); NowComponent++){
         // 컴포넌트의 리스트로 해서 변경사항 입력
-        NowComponent->second->Resize_Components();
+        NowComponent->second->Resize_Components(NULL, NULL, NULL, NULL, NULL);
     }
     Mut.unlock();
 }

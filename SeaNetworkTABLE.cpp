@@ -69,6 +69,8 @@ void ScreenCreateWork(std::string Data, char* network_ID, struct sockaddr_in cli
     ScrLR = DataToFloat(Data, "AngleLR");
     ScrUD = DataToFloat(Data, "AngleUD");
 
+    todo// 추가적으로 기본 템플릿 받아오게 하기
+
     cout << SName << Sx << Sh << ScrLR << endl;
     ScreenInfo *OneScn = new ScreenInfo(SName, Sx, Sy, Sz, Sh, Sw, ScrLR, ScrUD);
     // 생성된 스크린 아이디 전송
@@ -176,15 +178,25 @@ void ComponentsMotifyWork(std::string Data){
     std::string WorkMeth = DataToString(Data, "CmMotify");
     if (WorkMeth == "Size"){
         // 사이즈 변경
+        int mx = DataToInt(Data, "x");
+        int my = DataToInt(Data, "y");
+        int mw = DataToInt(Data, "w");
+        int mh = DataToInt(Data, "h");
+        int md = DataToInt(Data, "d");
+        Mut.lock();
+        ScreenList[Sid]->Components_List[Cid]->Resize_Components(mx, my, mw, mh, md);
+        Mut.unlock();
     }
     else if (WorkMeth == "Points"){
-        // 내용물 (캔버스)변경
-        int startX = DataToInt(Data, "startX");
-        int startY = DataToInt(Data, "startY");
+        // 내용물 (캔버스)변경 (이미지, 커스텀 버튼 전용)
+        int width = DataToInt(Data, "width");
+        int height = DataToInt(Data, "height");
         int length = DataToInt(Data, "Length");
         std::string ColorDatas = DataToString(Data, "Colors");
+        char* getColors = new char[length*4];
+        getColors = (char*) ColorDatas.c_str();
         Mut.lock();
-        ScreenList[Sid]->Components_List[Cid]->Canvas_Components(startX, startY, length, ColorDatas);
+        ScreenList[Sid]->Components_List[Cid]->Canvas_Components(width, height, length, getColors);
         Mut.unlock();
     }
 }

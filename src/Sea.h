@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <thread>
-#include <map> // thread와 충돌
+#include <map>
 #include <mutex>
 #include <string>
 #include <list>

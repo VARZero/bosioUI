@@ -1,4 +1,3 @@
-#include <thread>
 #include "Sea.h"
 
 int main(int argc, char **argv){

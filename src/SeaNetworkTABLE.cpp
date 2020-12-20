@@ -3,13 +3,11 @@
 #include "Sea.h"
 
 #include <iostream>
-#include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
-#include <thread>
 
 //map <int, map<std::string, std::string>> SeaNetworkID; // 데이터 재검증을 위해 저장하는 map
 

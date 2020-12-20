@@ -20,6 +20,31 @@ Sea.h에  자세한 내용은 이 저장소의 위키를 참조해 주세요.<br
 1. TinyXML2 <br>[Commit version: 1aeb57d26bc303d5cfa1a9ff2a331df7ba278656]<br>(zlib license) <br>https://github.com/leethomason/tinyxml2.git
 2. FreeGLUT
 
+## 라이선스
+이 프로젝트는 MIT License를 사용합니다.
+
+MIT License
+
+Copyright (c) 2020 신성민
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 ## 현재상황
 현재는 아직 시스템 전체가 구성되지 않았습니다. 그래서 당장 제대로된 구동이 될 일이 없습니다.(..)<br>
 되는대로 이 문서를 갱신하겠습니다. 아마, makefile을 실행시키고, sh를 실행하면 구동되게 만들어 질 것 같습니다.<br>

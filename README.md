@@ -17,7 +17,8 @@ Sea 프로토콜에 대한 자세한 정보는 Sea저장소와 저장소의 위�
 Sea.h에  자세한 내용은 이 저장소의 위키를 참조해 주세요.<br>
 
 ## 사용한 라이브러리
-1. TinyXML <br>https://github.com/leethomason/tinyxml2.git
+1. TinyXML2 <br>[Commit version: 1aeb57d26bc303d5cfa1a9ff2a331df7ba278656]<br>(zlib license) <br>https://github.com/leethomason/tinyxml2.git
+2. FreeGLUT
 
 ## 현재상황
 현재는 아직 시스템 전체가 구성되지 않았습니다. 그래서 당장 제대로된 구동이 될 일이 없습니다.(..)<br>

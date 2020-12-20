@@ -67,15 +67,15 @@ void ScreenCreateWork(std::string Data, char* network_ID, struct sockaddr_in cli
     Sw = DataToFloat(Data, "Width");
     // 각도 가져오기 AngleLR, AngleUD
     ScrLR = DataToFloat(Data, "AngleLR");
-    ScrUD = DataToFloat(Data, "AngleUD");
-
-    todo// 추가적으로 기본 템플릿 받아오게 하기
+    ScrUD = DataToFloat(Data, "AngleUD");    
 
     cout << SName << Sx << Sh << ScrLR << endl;
     ScreenInfo *OneScn = new ScreenInfo(SName, Sx, Sy, Sz, Sh, Sw, ScrLR, ScrUD);
     // 생성된 스크린 아이디 전송
     Mut.lock();
     Sid = OneScn->Output_ScreenID();
+    // 추가적으로 기본 템플릿 받아오게 하기
+    OneScn->ScrTemplate = DataToString(Data, "Template");
     Mut.unlock();
     cout << Sid << " Sid" << endl;
     char sendBuf[34], SidC[9]; // = { *network_ID + (char *) "SREVERSEScreenID:" + Sid };

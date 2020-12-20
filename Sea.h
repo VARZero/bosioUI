@@ -35,6 +35,7 @@ class ScreenInfo{ // 스크린 하나에 대한 정보
             // 아래는 Set_Screen함수를 통해 설정됨
         float CE1line, CE1sin, CE1cos, ED1sin, ED1cos, ED2sin, ED2cos, SEEy;
     public:
+        std::string ScrTemplate;
         map <int, Components_Info*> Components_List; // 컴포넌트 리스트
         float TopLeftx, TopLefty, TopLeftz, TopRightx, TopRighty, TopRightz, 
         BottomLeftx, BottomLefty, BottomLeftz, BottomRightx, BottomRighty, BottomRightz; // 좌표상 위치

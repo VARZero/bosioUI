@@ -127,27 +127,11 @@ void ComponentsCreateWork(std::string Data, char* network_ID, struct sockaddr_in
 
 void ComponentsEventWork(std::string Data, char* network_ID, struct sockaddr_in cliAddr){
     // 이벤트 전달
-    /*int Sid, Cid; // 스크린 아이디, 컴포넌트 아이디
+    int Sid, Cid; // 스크린 아이디, 컴포넌트 아이디
     std::string Event;
-    Sid = DataToInt(Data, "ScreenID");
+    Sid = DataToInt(Data, "ScreenID"); Cid = DataToInt(Data, "ComponentsID");
     Event = DataToString(Data, "Event");
-    if (Event == "Click"){
-        // 클릭시
-        float CliLR, CliUD;
-        CliLR = DataToFloat(Data, "LR");
-        CliUD = DataToFloat(Data, "UD");
-    }
-    else if (Event == "KeyPress"){
-        // 키보드 키 입력
-        char Key = (char) DataToString(Data, "Key").c_str();
-    }
-    else if (Event == "Scroll"){
-        // 스크롤
-    }
-    else if (Event == "FnEvent"){
-        // 제스쳐 같은 특수 이벤트
-
-    }*/
+    
 }
 
 void ScreenMotifyWork(std::string Data){

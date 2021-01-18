@@ -85,6 +85,15 @@ class Components_Info{ // 컴포넌트 하나에 관련된 정보
         }
 };
 
+class Components_Model3D{ // 3D 모델에 대한 정보
+    private:
+        int Mod_x, Mod_y, Mod_z, Mod_LR, Mod_UD, Mod_La; // 위치및 방향에 대한 정보
+        // 모델의 x, y, z좌표, 기울어진 방향 (좌우, 상하, 정면에서 봤을때 회전)
+        string name;
+        int Model_ID; // 모델 식별 아이디
+        
+};
+
 extern void Screen_Main(int, char);
 extern void Net_Sea_Table();
 

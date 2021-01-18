@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<bosioBoard>
-    <vbox id="ver"> <!-- 세로공간, 세로로 배치됨 -->
-        <lable>평범한 레이블</lable>
-        <butten action="startbut">버튼</butten>
-    </vbox>
-    <hbox id="hor">가로공간</hbox>
-</bosioBoard>
